@@ -17,6 +17,7 @@ module.exports = async (context) => {
   context.log(`Got ${restrictions.length} restrictions`)
 
   for await (const pr of pullrequests(context)) {
-    console.log(pr.number, await validatePr(context, pr, restrictions))
+    validatePr(context, pr, restrictions)
+      .then((res) => context.log(pr.number, res))
   }
 }
