@@ -13,7 +13,7 @@ module.exports = {
   getPrs: `
     query ($owner: String!, $repo: String!, $cursor: String) {
       repository(owner: $owner, name: $repo) {
-        result: pullRequests(states: OPEN, first: 100, after: $cursor) {
+        result: pullRequests(states: OPEN, last: 100, after: $cursor) {
           pageInfo { endCursor, hasNextPage }
           nodes {
             sha:headRefOid
