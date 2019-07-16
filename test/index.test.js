@@ -19,7 +19,7 @@ const fixtures = {
 nock.disableNetConnect()
 
 describe('fish footman', () => {
-  let probot = getProbot(myProbotApp)
+  const probot = getProbot(myProbotApp)
 
   beforeEach(() => {
     nock('https://api.github.com')
