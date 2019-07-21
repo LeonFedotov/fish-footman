@@ -35,8 +35,8 @@
       {
         "id": 1369143763,
         "node_id": "MDU6TGFiZWwxMzY5MTQzNzYz",
-        "url": "https://api.github.com/repos/LeonFedotov/fish-footman/labels/Fishy",
-        "name": "Fishy",
+        "url": "https://api.github.com/repos/LeonFedotov/fish-footman/labels/Quarantine",
+        "name": "Quarantine",
         "color": "8edb5e",
         "default": false
       }

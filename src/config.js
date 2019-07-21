@@ -1,5 +1,5 @@
 module.exports = {
-  labelName: 'Fishy',
+  labelName: 'Quarantine',
   statusName: 'Directory Locks',
-  statusDescription: 'Checking mergeability'
+  statusDescription: 'Checking mergeability based on issues labeled "Quarantine".'
 }
