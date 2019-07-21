@@ -1,6 +1,6 @@
 const nock = require('nock')
 const myProbotApp = require('..')
-const { statusName, statusDescription } = require('../src/config')
+const { statusName: context, statusDescription: description } = require('../src/config')
 const getProbot = require('./mocks/probot')
 
 const fixtures = {
@@ -15,6 +15,8 @@ const fixtures = {
   prUpdated: require('./fixtures/no-longer-fishy-pr'),
   fixedprFiles: require('./fixtures/fixed-pr-files')
 }
+
+const stateMock = (state) => ({ state, context, description })
 
 nock.disableNetConnect()
 
@@ -39,11 +41,7 @@ describe('fish footman', () => {
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
-          expect(body).toMatchObject({
-            context: statusName,
-            state: 'pending',
-            description: statusDescription
-          })
+          expect(body).toMatchObject(stateMock('pending'))
           return true
         }
       )
@@ -51,11 +49,7 @@ describe('fish footman', () => {
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
-          expect(body).toMatchObject({
-            context: statusName,
-            state: 'failure',
-            description: statusDescription
-          })
+          expect(body).toMatchObject(stateMock('failure'))
           return true
         }
       )
@@ -72,11 +66,7 @@ describe('fish footman', () => {
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
-          expect(body).toMatchObject({
-            context: 'Directory Locks',
-            state: 'pending',
-            description: 'Checking mergeability'
-          })
+          expect(body).toMatchObject(stateMock('pending'))
           return true
         }
       )
@@ -84,11 +74,7 @@ describe('fish footman', () => {
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
-          expect(body).toMatchObject({
-            context: 'Directory Locks',
-            state: 'failure',
-            description: 'Checking mergeability'
-          })
+          expect(body).toMatchObject(stateMock('failure'))
           return true
         }
       )
@@ -105,11 +91,7 @@ describe('fish footman', () => {
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
-          expect(body).toMatchObject({
-            context: 'Directory Locks',
-            state: 'pending',
-            description: 'Checking mergeability'
-          })
+          expect(body).toMatchObject(stateMock('pending'))
           return true
         }
       )
@@ -117,11 +99,7 @@ describe('fish footman', () => {
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
-          expect(body).toMatchObject({
-            context: 'Directory Locks',
-            state: 'success',
-            description: 'Checking mergeability'
-          })
+          expect(body).toMatchObject(stateMock('success'))
           return true
         }
       )
@@ -138,11 +116,7 @@ describe('fish footman', () => {
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
-          expect(body).toMatchObject({
-            context: 'Directory Locks',
-            state: 'pending',
-            description: 'Checking mergeability'
-          })
+          expect(body).toMatchObject(stateMock('pending'))
           return true
         }
       )
@@ -150,11 +124,7 @@ describe('fish footman', () => {
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
-          expect(body).toMatchObject({
-            context: 'Directory Locks',
-            state: 'success',
-            description: 'Checking mergeability'
-          })
+          expect(body).toMatchObject(stateMock('success'))
           return true
         }
       )
@@ -171,11 +141,7 @@ describe('fish footman', () => {
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
-          expect(body).toMatchObject({
-            context: 'Directory Locks',
-            state: 'pending',
-            description: 'Checking mergeability'
-          })
+          expect(body).toMatchObject(stateMock('pending'))
           return true
         }
       )
@@ -183,11 +149,7 @@ describe('fish footman', () => {
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
-          expect(body).toMatchObject({
-            context: 'Directory Locks',
-            state: 'success',
-            description: 'Checking mergeability'
-          })
+          expect(body).toMatchObject(stateMock('success'))
           return true
         }
       )
