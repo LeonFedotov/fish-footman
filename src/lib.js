@@ -47,7 +47,7 @@ module.exports = {
       .flatten()
       .uniq()
       .compact()
-      .map((dir) => path.normalize(`${dir}/`))
+      .map((dir) => path.normalize(`${dir.trim()}/`))
       .value()
     ),
 
