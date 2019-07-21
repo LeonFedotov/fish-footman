@@ -32,7 +32,7 @@ module.exports = {
     query ($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
       repository(owner: $owner, name: $repo) {
         pullRequest(number: $number) {
-          result: files(first:100, after: $cursor, orderBy:{field:CREATED_AT, direction:DESC}) {
+          result: files(first:100, after: $cursor) {
             pageInfo { hasNextPage, endCursor }
             nodes { path }
           }
