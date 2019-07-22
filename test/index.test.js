@@ -38,14 +38,14 @@ describe('fish footman', () => {
       .reply(200, fixtures.getIssues)
       .post('/graphql')
       .reply(200, fixtures.getPrs)
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
-        (body) => {
-          expect(body).toMatchObject(stateMock('pending'))
-          return true
-        }
-      )
-      .reply(200, {})
+      // .post(
+      //   '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
+      //   (body) => {
+      //     expect(body).toMatchObject(stateMock('pending'))
+      //     return true
+      //   }
+      // )
+      // .reply(200, {})
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
@@ -63,14 +63,14 @@ describe('fish footman', () => {
       .reply(200, fixtures.getIssues)
       .post('/graphql')
       .reply(200, fixtures.getPrs)
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
-        (body) => {
-          expect(body).toMatchObject(stateMock('pending'))
-          return true
-        }
-      )
-      .reply(200, {})
+      // .post(
+      //   '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
+      //   (body) => {
+      //     expect(body).toMatchObject(stateMock('pending'))
+      //     return true
+      //   }
+      // )
+      // .reply(200, {})
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
@@ -88,14 +88,14 @@ describe('fish footman', () => {
       .reply(200, fixtures.getIssues)
       .post('/graphql')
       .reply(200, fixtures.fixedprFiles)
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
-        (body) => {
-          expect(body).toMatchObject(stateMock('pending'))
-          return true
-        }
-      )
-      .reply(200, {})
+      // .post(
+      //   '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
+      //   (body) => {
+      //     expect(body).toMatchObject(stateMock('pending'))
+      //     return true
+      //   }
+      // )
+      // .reply(200, {})
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
@@ -113,14 +113,14 @@ describe('fish footman', () => {
       .reply(200, fixtures.noIssues)
       .post('/graphql')
       .reply(200, fixtures.getPrs)
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
-        (body) => {
-          expect(body).toMatchObject(stateMock('pending'))
-          return true
-        }
-      )
-      .reply(200, {})
+      // .post(
+      //   '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
+      //   (body) => {
+      //     expect(body).toMatchObject(stateMock('pending'))
+      //     return true
+      //   }
+      // )
+      // .reply(200, {})
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
@@ -138,14 +138,14 @@ describe('fish footman', () => {
       .reply(200, fixtures.noIssues)
       .post('/graphql')
       .reply(200, fixtures.getPrs)
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
-        (body) => {
-          expect(body).toMatchObject(stateMock('pending'))
-          return true
-        }
-      )
-      .reply(200, {})
+      // .post(
+      //   '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
+      //   (body) => {
+      //     expect(body).toMatchObject(stateMock('pending'))
+      //     return true
+      //   }
+      // )
+      // .reply(200, {})
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
