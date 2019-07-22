@@ -9,3 +9,7 @@ if the issue is closed/the pr is updated the bot will re-evaluate the state and 
 ### Notes:
   - you can have more than one issue, the bot will merge the directories
   - you need to create the label "Quarantine" on the target repo
+
+### Trivia:
+> In Lewis Carroll's novel Alice's Adventures in Wonderland, the Fish-Footman delivers a croquet invitation from the Queen of Hearts to The Duchess's the Frog-Footman, which he then delivers to the Duchess. 
+> \- [fandom.com](https://aliceinwonderland.fandom.com/wiki/Fish-Footman)
