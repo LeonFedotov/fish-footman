@@ -21,7 +21,7 @@ module.exports = async (context) => {
       validatePr(context, pr, restrictions)
         .then((res) => context.log(pr.number, res))
     }
-  } catch(e) {
+  } catch (e) {
     console.log(e.message, JSON.stringify(e))
   }
 }
