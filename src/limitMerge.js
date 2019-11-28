@@ -13,11 +13,15 @@ const validatePr = async (context, pr, restrictions) => {
 
 module.exports = async (context) => {
   context.log('Gathering restrictions')
-  const restrictions = await restrictedDirs(context)
-  context.log(`Got ${restrictions.length} restrictions`, restrictions)
+  try {
+    const restrictions = await restrictedDirs(context)
+    context.log(`Got ${restrictions.length} restrictions`, restrictions)
 
-  for await (const pr of pullrequests(context)) {
-    validatePr(context, pr, restrictions)
-      .then((res) => context.log(pr.number, res))
+    for await (const pr of pullrequests(context)) {
+      validatePr(context, pr, restrictions)
+        .then((res) => context.log(pr.number, res))
+    }
+  } catch (e) {
+    console.log(e.message, JSON.stringify(e))
   }
 }
