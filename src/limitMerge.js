@@ -1,6 +1,11 @@
 const { createStatus, restrictedDirs, pullrequests } = require('./lib')
 const validatePr = async (context, pr, restrictions) => {
   // await createStatus(context, pr.sha, 'pending')
+  if(restrictions.some(dir => dir == '*/')) {
+    createStatus(context, pr.sha, 'failure')
+    return false
+  }
+  
   for await (const file of pr.files) {
     if (restrictions.some((dir) => file.startsWith(dir))) {
       createStatus(context, pr.sha, 'failure')
