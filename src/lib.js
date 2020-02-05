@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const path = require('path')
-const { labelName, statusName, statusDescription } = require('./config')
+const { labelName, statusName, successMessage, failureMessage, statusDescription } = require('./config')
 const { getIssues, getPrs, getFiles } = require('./queries')
 
 const fishyNodes = async (
@@ -14,8 +14,8 @@ const fishyNodes = async (
       : nodes
   )
 
-async function * filesPage (context, number, { pageInfo: { hasNextPage: nextPage, cursor }, nodes }) {
-  yield * nodes.map(({ path }) => path)
+async function* filesPage(context, number, { pageInfo: { hasNextPage: nextPage, cursor }, nodes }) {
+  yield* nodes.map(({ path }) => path)
 
   while (nextPage) {
     const { hasNextPage, endCursor, nodes } = await context.github
@@ -23,7 +23,7 @@ async function * filesPage (context, number, { pageInfo: { hasNextPage: nextPage
       .then(({ repository: { pullRequest: { result: { nodes, pageInfo: { hasNextPage, endCursor } } } } }) => ({ hasNextPage, endCursor, nodes }))
     nextPage = hasNextPage
     cursor = endCursor
-    yield * nodes.map(({ path }) => path)
+    yield* nodes.map(({ path }) => path)
   }
 }
 
@@ -31,7 +31,7 @@ module.exports = {
   createStatus: (context,
     sha = context.payload.pull_request.head.sha,
     state = 'pending',
-    status = { name: statusName, descr: statusDescription }
+    status = { name: statusName, descr: state == 'success' ? successMessage : state == 'failure' ? failureMessage : statusDescription }
   ) => context.github.repos.createStatus(
     context.repo({
       context: status.name,
@@ -51,7 +51,7 @@ module.exports = {
       .value()
     ),
 
-  pullrequests: async function * pullrequests (context) {
+  pullrequests: async function* pullrequests(context) {
     let nextPage = true
     let cursor = null
 
@@ -63,7 +63,7 @@ module.exports = {
       nextPage = hasNextPage
       cursor = endCursor
 
-      yield * nodes.map(({ files: nodes, sha, number }) => ({ sha, number, files: filesPage(context, number, nodes) }))
+      yield* nodes.map(({ files: nodes, sha, number }) => ({ sha, number, files: filesPage(context, number, nodes) }))
     }
   }
 }

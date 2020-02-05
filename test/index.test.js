@@ -1,6 +1,6 @@
 const nock = require('nock')
 const myProbotApp = require('..')
-const { statusName: context, statusDescription: description } = require('../src/config')
+const { statusName: context, successMessage, failureMessage } = require('../src/config')
 const { createProbot } = require('probot')
 
 const fixtures = {
@@ -16,118 +16,143 @@ const fixtures = {
   fixedprFiles: require('./fixtures/fixed-pr-files')
 }
 
-const stateMock = (state) => ({ state, context, description })
-
+const stateMock = (state) => ({ state, context, description: state === 'success' ? successMessage : failureMessage })
+nock.disableNetConnect()
 
 describe('fish footman', () => {
   let probot
-
+  let scope
   beforeEach(() => {
-    nock.disableNetConnect()
+    scope = nock('https://api.github.com')
+    // scope.log(console.log)
+    scope
+      .on('error', (err) => console.error(err))
+
     probot = createProbot({ id: 1, cert: 'test', githubToken: 'test' })
     probot.load(myProbotApp)
   })
 
   afterEach(() => {
+    expect(scope.isDone()).toBe(true, 'pending mocks: ' + scope.pendingMocks())
     nock.cleanAll()
-    nock.enableNetConnect()
   })
 
-  test('when a fishy issue is created prs that touch fishy paths with be blocked', (done) => {
-    probot.receive({ name: 'issues', payload: fixtures.issueCreated })
+  test('when a fishy issue is created prs that touch fishy paths with be blocked', async () => {
+    scope
+      .get('/app')
+      .reply(200, { events: ['issues', 'pull_request', 'push'] })
 
-    nock('https://api.github.com:443')
+    scope
+      .post('/graphql')
+      .reply(200, fixtures.getIssues)
+
+    scope
+      .post('/graphql')
+      .reply(200, fixtures.getPrs)
+
+    const statusChange = new Promise((resolve) => scope
+      .post(
+        '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
+        (body) => {
+          expect(body).toMatchObject(stateMock('failure'))
+          resolve()
+          return true;
+        }
+      )
+      .reply(200, {})
+    )
+
+    await probot.receive({ name: 'issues', payload: fixtures.issueCreated })
+
+    return statusChange
+  })
+
+  test('when a pr is created with restricted paths bot will block it', async () => {
+    scope
       .post('/graphql')
       .reply(200, fixtures.getIssues)
       .post('/graphql')
       .reply(200, fixtures.getPrs)
 
+    const statusChange = new Promise((resolve) => scope
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
           expect(body).toMatchObject(stateMock('failure'))
-          done()
+          resolve()
           return true
         }
       )
       .reply(200, {})
-
-
+    )
+    await probot.receive({ name: 'pull_request', payload: fixtures.prCreated })
+    return statusChange
   })
 
-  test('when a pr is created with restricted paths bot will block it', (done) => {
-    nock('https://api.github.com:443')
-      .post('/graphql')
-      .reply(200, fixtures.getIssues)
-      .post('/graphql')
-      .reply(200, fixtures.getPrs)
-
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
-        (body) => {
-          expect(body).toMatchObject(stateMock('failure'))
-          done()
-          return true
-        }
-      )
-      .reply(200, {})
-    probot.receive({ name: 'pull_request', payload: fixtures.prCreated })
-  })
-
-  test('when a pr is changed to not touch restricted paths pr is unlocked', (done) => {
-    nock('https://api.github.com:443')
+  test('when a pr is changed to not touch restricted paths pr is unlocked', async () => {
+    scope
       .post('/graphql')
       .reply(200, fixtures.getIssues)
       .post('/graphql')
       .reply(200, fixtures.fixedprFiles)
 
+    const statusChange = new Promise((resolve) => scope
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
           expect(body).toMatchObject(stateMock('success'))
-          done()
+          resolve()
           return true
         }
       )
       .reply(200, {})
-    probot.receive({ name: 'pull_request', payload: fixtures.prUpdated })
+    )
+    await probot.receive({ name: 'pull_request', payload: fixtures.prUpdated })
+    return statusChange
   })
 
-  test('when a fishy issue is closed affected prs are unlocked', (done) => {
-    nock('https://api.github.com:443')
+  test('when a fishy issue is closed affected prs are unlocked', async () => {
+    scope
       .post('/graphql')
       .reply(200, fixtures.noIssues)
       .post('/graphql')
       .reply(200, fixtures.getPrs)
 
+    const statusChange = new Promise((resolve) => scope
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
           expect(body).toMatchObject(stateMock('success'))
-          done()
+          resolve()
           return true
         }
       )
       .reply(200, {})
-    probot.receive({ name: 'issues', payload: fixtures.issueClosed })
+    )
+    await probot.receive({ name: 'issues', payload: fixtures.issueClosed })
+    return statusChange
   })
 
-  test('when a fishy issue is edited affected prs are updated', (done) => {
-    nock('https://api.github.com:443')
+  test('when a fishy issue is edited affected prs are updated', async () => {
+    scope
       .post('/graphql')
       .reply(200, fixtures.noIssues)
       .post('/graphql')
       .reply(200, fixtures.getPrs)
+
+    const statusChange = new Promise((resolve) => scope
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
         (body) => {
           expect(body).toMatchObject(stateMock('success'))
-          done()
+          resolve()
           return true
         }
       )
       .reply(200)
-    probot.receive({ name: 'issues', payload: fixtures.issueEdited })
+    )
+    await probot.receive({ name: 'issues', payload: fixtures.issueEdited })
+    return statusChange
   })
 
 
