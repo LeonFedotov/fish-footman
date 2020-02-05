@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const path = require('path')
-const { labelName, statusName, statusDescription } = require('./config')
+const { labelName, statusName, successMessage, failureMessage, statusDescription } = require('./config')
 const { getIssues, getPrs, getFiles } = require('./queries')
 
 const fishyNodes = async (
@@ -28,11 +28,13 @@ async function * filesPage (context, number, { pageInfo: { hasNextPage: nextPage
 }
 
 module.exports = {
-  createStatus: (context,
+  createStatus: (
+    context,
     sha = context.payload.pull_request.head.sha,
+    oldState = 'PENDING',
     state = 'pending',
-    status = { name: statusName, descr: statusDescription }
-  ) => context.github.repos.createStatus(
+    status = { name: statusName, descr: state === 'success' ? successMessage : state === 'failure' ? failureMessage : statusDescription }
+  ) => oldState === state.toUpperCase() ? context.log('Same state detected, skipping.', { sha }) : context.github.repos.createStatus(
     context.repo({
       context: status.name,
       sha,
@@ -57,13 +59,16 @@ module.exports = {
 
     while (nextPage) {
       const { hasNextPage, endCursor, nodes } = await context.github
-        .graphql(getPrs, context.repo({ cursor }))
-        .then(({ repository: { result: { nodes, pageInfo: { hasNextPage, endCursor } } } }) => ({ hasNextPage, endCursor, nodes }))
+        .graphql(getPrs, context.repo({ cursor, statusName }))
+        .then(
+          ({ repository: { result: { nodes, pageInfo: { hasNextPage, endCursor } } } }) =>
+            ({ hasNextPage, endCursor, nodes })
+        )
 
       nextPage = hasNextPage
       cursor = endCursor
 
-      yield * nodes.map(({ files: nodes, sha, number }) => ({ sha, number, files: filesPage(context, number, nodes) }))
+      yield * nodes.map(({ files: nodes, sha, number, commits }) => ({ sha, state: _.get(commits, 'nodes.0.commit.status.context.state', 'PENDING'), number, files: filesPage(context, number, nodes) }))
     }
   }
 }
