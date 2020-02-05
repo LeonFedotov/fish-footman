@@ -11,13 +11,24 @@ module.exports = {
   `,
 
   getPrs: `
-    query ($owner: String!, $repo: String!, $cursor: String) {
+    query ($owner: String!, $repo: String!, $statusName: String!, $cursor: String) {
       repository(owner: $owner, name: $repo) {
         result: pullRequests(states: OPEN, first: 100, after: $cursor, orderBy:{field:CREATED_AT, direction:DESC}) {
           pageInfo { endCursor, hasNextPage }
           nodes {
             sha:headRefOid
             number
+            commits(last: 1) {
+              nodes {
+                commit {
+                  status {
+                    context(name: $statusName) {
+                      state
+                    }
+                  }
+                }
+              }
+            }
             files(first:100) {
               pageInfo { endCursor, hasNextPage }
               nodes { path }
