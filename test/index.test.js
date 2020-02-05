@@ -27,22 +27,19 @@ describe('fish footman', () => {
   beforeEach(() => {
     nock.disableNetConnect()
 
-
     scope = nock('https://api.github.com')
-
 
     scope.on('error', (err) => console.error(err))
 
     probot = createProbot({ id: 1, cert: 'test', githubToken: 'test' })
     probot.load(myProbotApp)
-    //scope.log(console.log)
+    // scope.log(console.log)
   })
 
   afterEach(() => {
     expect(scope.isDone()).toBe(true, 'pending mocks: ' + scope.pendingMocks())
     nock.cleanAll()
     nock.enableNetConnect()
-
   })
 
   test('when a fishy issue is created prs that touch fishy paths with be blocked', async () => {
@@ -64,7 +61,7 @@ describe('fish footman', () => {
         (body) => {
           expect(body).toMatchObject(stateMock('failure'))
           resolve()
-          return true;
+          return true
         }
       )
       .reply(200, {})

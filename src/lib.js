@@ -14,8 +14,8 @@ const fishyNodes = async (
       : nodes
   )
 
-async function* filesPage(context, number, { pageInfo: { hasNextPage: nextPage, cursor }, nodes }) {
-  yield* nodes.map(({ path }) => path)
+async function * filesPage (context, number, { pageInfo: { hasNextPage: nextPage, cursor }, nodes }) {
+  yield * nodes.map(({ path }) => path)
 
   while (nextPage) {
     const { hasNextPage, endCursor, nodes } = await context.github
@@ -23,7 +23,7 @@ async function* filesPage(context, number, { pageInfo: { hasNextPage: nextPage, 
       .then(({ repository: { pullRequest: { result: { nodes, pageInfo: { hasNextPage, endCursor } } } } }) => ({ hasNextPage, endCursor, nodes }))
     nextPage = hasNextPage
     cursor = endCursor
-    yield* nodes.map(({ path }) => path)
+    yield * nodes.map(({ path }) => path)
   }
 }
 
@@ -33,8 +33,8 @@ module.exports = {
     sha = context.payload.pull_request.head.sha,
     oldState = 'PENDING',
     state = 'pending',
-    status = { name: statusName, descr: state == 'success' ? successMessage : state == 'failure' ? failureMessage : statusDescription }
-  ) => oldState == state.toUpperCase() ? context.log('Same state detected, skipping.', { sha }) : context.github.repos.createStatus(
+    status = { name: statusName, descr: state === 'success' ? successMessage : state === 'failure' ? failureMessage : statusDescription }
+  ) => oldState === state.toUpperCase() ? context.log('Same state detected, skipping.', { sha }) : context.github.repos.createStatus(
     context.repo({
       context: status.name,
       sha,
@@ -53,7 +53,7 @@ module.exports = {
       .value()
     ),
 
-  pullrequests: async function* pullrequests(context) {
+  pullrequests: async function * pullrequests (context) {
     let nextPage = true
     let cursor = null
 
@@ -68,7 +68,7 @@ module.exports = {
       nextPage = hasNextPage
       cursor = endCursor
 
-      yield* nodes.map(({ files: nodes, sha, number, commits }) => ({ sha, state: _.get(commits, 'nodes.0.commit.status.context.state', 'PENDING'), number, files: filesPage(context, number, nodes) }))
+      yield * nodes.map(({ files: nodes, sha, number, commits }) => ({ sha, state: _.get(commits, 'nodes.0.commit.status.context.state', 'PENDING'), number, files: filesPage(context, number, nodes) }))
     }
   }
 }
