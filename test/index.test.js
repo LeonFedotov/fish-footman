@@ -5,8 +5,10 @@ const { createProbot } = require('probot')
 
 const fixtures = {
   getIssues: require('./fixtures/gql-get-issues'),
+  wildIssues: require('./fixtures/gql-wildcard-issues'),
   noIssues: require('./fixtures/gql-get-no-issues'),
   issueCreated: require('./fixtures/fishy-issue-created'),
+  wildcardIssue: require('./fixtures/wildcard-issue-created'),
   issueEdited: require('./fixtures/fishy-issue-edited'),
   issueClosed: require('./fixtures/fishy-issue-closed'),
 
@@ -17,16 +19,16 @@ const fixtures = {
 }
 
 const stateMock = (state) => ({ state, context, description: state === 'success' ? successMessage : failureMessage })
-nock.disableNetConnect()
 
 describe('fish footman', () => {
   let probot
   let scope
   beforeEach(() => {
+    nock.disableNetConnect()
+
     scope = nock('https://api.github.com')
-    // scope.log(console.log)
-    scope
-      .on('error', (err) => console.error(err))
+    //scope.log(console.log)
+    scope.on('error', (err) => console.error(err))
 
     probot = createProbot({ id: 1, cert: 'test', githubToken: 'test' })
     probot.load(myProbotApp)
@@ -35,6 +37,8 @@ describe('fish footman', () => {
   afterEach(() => {
     expect(scope.isDone()).toBe(true, 'pending mocks: ' + scope.pendingMocks())
     nock.cleanAll()
+    nock.enableNetConnect()
+
   })
 
   test('when a fishy issue is created prs that touch fishy paths with be blocked', async () => {
@@ -155,5 +159,25 @@ describe('fish footman', () => {
     return statusChange
   })
 
+  test('when a fishy issue is created with a wildcard all prs are blocked', async () => {
+    scope
+      .post('/graphql')
+      .reply(200, fixtures.wildIssues)
+      .post('/graphql')
+      .reply(200, fixtures.getPrs)
 
+    const statusChange = new Promise((resolve) => scope
+      .post(
+        '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
+        (body) => {
+          expect(body).toMatchObject(stateMock('failure'))
+          resolve()
+          return true
+        }
+      )
+      .reply(200)
+    )
+    await probot.receive({ name: 'issues', payload: fixtures.wildcardIssue })
+    return statusChange
+  })
 })
