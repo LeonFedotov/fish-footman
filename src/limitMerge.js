@@ -16,8 +16,8 @@ const validatePr = async (context, pr, restrictions) => {
 }
 
 module.exports = async (context) => {
-  context.log('Gathering restrictions')
   try {
+    context.log('Gathering restrictions')
     const restrictions = await restrictedDirs(context)
     context.log(`Got ${restrictions.length} restrictions`, restrictions)
 
