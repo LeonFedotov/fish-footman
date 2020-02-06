@@ -37,7 +37,7 @@ module.exports = {
     },
     state = 'pending',
     status = { name: statusName, descr: state === 'success' ? successMessage : state === 'failure' ? failureMessage : statusDescription }
-  ) => oldState === state.toUpperCase() ? context.log('Same state detected, skipping.', { number, state }) : context.github.repos.createStatus(
+  ) => oldState !== state.toUpperCase() && context.github.repos.createStatus(
     context.repo({
       context: status.name,
       sha,
