@@ -32,7 +32,7 @@ module.exports = {
     context,
     {
       sha = context.payload.pull_request.head.sha,
-      oldState = 'PENDING',
+      state: oldState = 'PENDING',
       number
     },
     state = 'pending',
