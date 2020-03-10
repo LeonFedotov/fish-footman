@@ -37,14 +37,14 @@
           },
           {
             "sha": "888",
-            "number": 22,
+            "number": 21,
             "commits": {
               "nodes": [
                 {
                   "commit": {
                     "status": {
                       "context": {
-                        "state": "FAILURE"
+                        "state": "SUCCESS"
                       }
                     }
                   }
@@ -72,7 +72,7 @@
                   "commit": {
                     "status": {
                       "context": {
-                        "state": "FAILURE"
+                        "state": "SUCCESS"
                       }
                     }
                   }

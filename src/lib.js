@@ -1,18 +1,6 @@
 const _ = require('lodash')
-const path = require('path')
-const { labelName, statusName, successMessage, failureMessage, statusDescription } = require('./config')
-const { getIssues, getPrs, getFiles } = require('./queries')
 
-const fishyNodes = async (
-  context,
-  params = context.repo({ label: labelName })
-) => context.github
-  .graphql(getIssues, params)
-  .then(async ({ repository: { result: { nodes, pageInfo: { hasNextPage, endCursor: cursor } } } }) =>
-    hasNextPage
-      ? nodes.concat(await fishyNodes(context, { ...params, cursor }))
-      : nodes
-  )
+const { getPrs, getPr, getFiles, getPrsCommits, getMasterLog } = require('./queries')
 
 async function * filesPage (context, number, { pageInfo: { hasNextPage: nextPage, cursor }, nodes }) {
   yield * nodes.map(({ path }) => path)
@@ -28,35 +16,29 @@ async function * filesPage (context, number, { pageInfo: { hasNextPage: nextPage
 }
 
 module.exports = {
-  createStatus: (
-    context,
-    {
-      sha = context.payload.pull_request.head.sha,
-      state: oldState = 'PENDING',
-      number
-    },
-    state = 'pending',
-    status = { name: statusName, descr: state === 'success' ? successMessage : state === 'failure' ? failureMessage : statusDescription }
-  ) => oldState !== state.toUpperCase() && context.github.repos.createStatus(
-    context.repo({
-      context: status.name,
-      sha,
-      state,
-      description: status.descr
-    })
-  ),
 
-  restrictedDirs: (context) => fishyNodes(context)
-    .then(nodes => _.chain(nodes)
-      .map(({ body }) => body.split('\r\n'))
-      .flatten()
-      .uniq()
-      .compact()
-      .map((dir) => path.normalize(`${dir.trim()}/`))
-      .value()
-    ),
+  async pullrequest (context, statusName) {
+    const number = _.get(context, 'payload.pull_request.number', -1)
+    const { sha, commit, files } = await context.github
+      .graphql(getPr, context.repo({ statusName, number }))
+      .then(({
+        repository: {
+          pullRequest: {
+            files,
+            commits: { nodes: [{ commit: { oid, committedDate, status } }] }
+          }
+        }
+      }) => ({
+        sha: oid,
+        state: _.get(status, 'context.state', 'PENDING'),
+        commit: { oid, timestamp: +new Date(committedDate) },
+        files
+      }))
 
-  pullrequests: async function * pullrequests (context) {
+    return { sha, number, commit, files: filesPage(context, number, files) }
+  },
+
+  async * pullrequests (context, statusName) {
     let nextPage = true
     let cursor = null
 
@@ -71,7 +53,50 @@ module.exports = {
       nextPage = hasNextPage
       cursor = endCursor
 
-      yield * nodes.map(({ files: nodes, sha, number, commits }) => ({ sha, state: _.get(commits, 'nodes.0.commit.status.context.state', 'PENDING'), number, files: filesPage(context, number, nodes) }))
+      yield * nodes.map(({ files: nodes, sha, number, commits: { nodes: [{ commit: { status } }] } }) => ({
+        sha,
+        number,
+        state: _.get(status, 'context.state', 'PENDING'),
+        files: filesPage(context, number, nodes)
+      }))
+    }
+  },
+
+  async masterCommits (context) {
+    const commits = await context.github.graphql(getMasterLog, context.repo())
+    return _.get(commits, 'repository.ref.target.history.commits', []).map(
+      ({ node: { oid, committedDate } }) => ({
+        oid,
+        timestamp: +new Date(committedDate)
+      })
+    )
+  },
+
+  async * lastCommitOfPrs (context, statusName) {
+    let nextPage = true
+    let cursor = null
+    while (nextPage) {
+      const { hasNextPage, endCursor, nodes } = await context.github
+        .graphql(getPrsCommits, context.repo({ cursor, statusName }))
+        .then(
+          ({
+            repository: {
+              result: {
+                nodes,
+                pageInfo: { hasNextPage, endCursor }
+              }
+
+            }
+          }) => ({ hasNextPage, endCursor, nodes })
+        )
+
+      nextPage = hasNextPage
+      cursor = endCursor
+
+      yield * nodes.map(({ sha, number, commits: { nodes: [{ commit: { oid, committedDate, status } }] } }) => ({
+        sha, number, state: _.get(status, 'context.state', 'PENDING'), oid, timestamp: +new Date(committedDate)
+      }))
     }
   }
+
 }

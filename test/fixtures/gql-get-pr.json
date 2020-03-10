@@ -3,7 +3,7 @@
     "repository": {
       "pullRequest": {
         "number": 51,
-        "sha": "moo",
+        "sha": "5f9ca41c7ba1f5c0ff8932782b351adf3a8ce46a",
         "files": {
           "pageInfo": {
             "endCursor": "MQ",
@@ -11,10 +11,7 @@
           },
           "nodes": [
             {
-              "path": "test/index.html"
-            },
-            {
-              "path": "docsv2/index.html"
+              "path": "docs/index.html"
             }
           ]
         },
@@ -22,7 +19,7 @@
           "nodes": [
             {
               "commit": {
-                "oid": "moo",
+                "oid": "5f9ca41c7ba1f5c0ff8932782b351adf3a8ce46a",
                 "timestamp": "2020-02-06T09:43:33Z",
                 "status": {
                   "context": {
