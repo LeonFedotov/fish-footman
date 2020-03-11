@@ -64,12 +64,13 @@ module.exports = {
 
   async masterCommits (context) {
     const commits = await context.github.graphql(getMasterLog, context.repo())
-    return _.get(commits, 'repository.ref.target.history.commits', []).map(
-      ({ node: { oid, committedDate } }) => ({
+    return _
+      .get(commits, 'repository.pullRequests.nodes', [])
+      .reverse()
+      .map(({ node: { oid, committedDate } }) => ({
         oid,
         timestamp: +new Date(committedDate)
-      })
-    )
+      }))
   },
 
   async * lastCommitOfPrs (context, statusName) {

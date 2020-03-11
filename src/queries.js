@@ -68,17 +68,11 @@ module.exports = {
   getMasterLog: `
     query($owner: String! $repo: String!) {
       repository(name: $repo owner: $owner) {
-        ref(qualifiedName: "master") {
-          target {
-            ... on Commit {
-              history(first: 20) {
-                commits: edges {
-                  node {
-                    oid
-                    committedDate
-                  }
-                }
-              }
+        pullRequests(last: 20 states: MERGED) {
+          nodes {
+            node: mergeCommit {
+              committedDate
+              oid
             }
           }
         }

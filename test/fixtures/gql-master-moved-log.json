@@ -1,133 +1,129 @@
 {
   "data": {
     "repository": {
-      "ref": {
-        "target": {
-          "history": {
-            "commits": [
-              {
-                "node": {
-                  "oid": "8c1680769c4e6df1b451954b9983258ec6761bbf",
-                  "committedDate": "2021-03-09T16:06:26Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "8ddfb3aff175dbe113fb0adb02cf51f201b47cb5",
-                  "committedDate": "2021-02-06T09:43:20Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "3f7aa0f126d30646867e33ca75c0e9dc300cb97b",
-                  "committedDate": "2021-02-06T09:42:08Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "ba255cdf3712d6e1493a6c4b82b22a19a0a9adfa",
-                  "committedDate": "2021-02-06T08:19:31Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "a59d8e09894d159f93ee8ccdc19c27b806f7a6f9",
-                  "committedDate": "2021-02-06T08:17:45Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "55a735bfaafb17fbb098ec13d5fe5f397b987ecc",
-                  "committedDate": "2021-02-06T08:15:36Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "1417757b14a5cb61da8430f75b4d3b7433e9d9fd",
-                  "committedDate": "2021-02-06T08:14:06Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "d0499d43537dac62120f1265a942455328d9d371",
-                  "committedDate": "2021-02-06T08:11:49Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "25befa9bc8d36a9de7b1a13c8acbda8aa99658e5",
-                  "committedDate": "2021-02-06T07:58:59Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "f2363c1b5036b370d8ef07e57ea6fea135a3a71b",
-                  "committedDate": "2021-02-06T07:55:29Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "ac4309579b6e1d8926b4e8fd494c14ac43821f4e",
-                  "committedDate": "2021-02-06T07:53:48Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "1148c2cbd7b9fe8c7c9de2187911a5bd5893e7c8",
-                  "committedDate": "2021-02-06T07:33:35Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "b8800985777ea1f56352920238224062324497a1",
-                  "committedDate": "2021-02-06T07:30:50Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "1c51e5c78abe1bf4144b783bb86f9263b5ea12cc",
-                  "committedDate": "2021-02-06T07:20:33Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "b381f7e592a4ce09a47456145ba80d32a0ce07e2",
-                  "committedDate": "2021-02-06T07:17:20Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "12cce276abe1509adee6d9e4903adb300eb8ccfb",
-                  "committedDate": "2021-02-06T07:13:35Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "314e16d0e577ba4dcaf95d9501256e6614e6f4b7",
-                  "committedDate": "2021-02-06T07:09:56Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "bd000df4e5a42a3ffbfb7c1343e0a49163d81ec2",
-                  "committedDate": "2021-02-06T07:09:31Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "91fb5fb4655ea0703c3b2126bacc87de6ef13488",
-                  "committedDate": "2021-02-06T07:07:20Z"
-                }
-              },
-              {
-                "node": {
-                  "oid": "6f7d77c47326da66c6f032b008f3807647b513c1",
-                  "committedDate": "2021-02-06T07:06:30Z"
-                }
-              }
-            ]
+      "pullRequests": {
+        "nodes": [
+          {
+            "node": {
+              "committedDate": "2020-06-02T10:18:00Z",
+              "oid": "adc7c1e80082076632d68f3e0305aed27c2bd981"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2020-06-03T10:04:49Z",
+              "oid": "2f9ff2d4d8c615274896b735d4442ca7b0a2d2fe"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2020-06-03T11:40:07Z",
+              "oid": "bd8d215f19ce9de05fce976b5306c615cfe3f237"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2020-06-03T11:48:14Z",
+              "oid": "ea91f1e492e20e51ad11db33d5a06f9504de2d7f"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2020-07-16T12:06:24Z",
+              "oid": "bee70598c52bf7b88539ae73de7a913e16a4ab4a"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2020-07-21T12:22:31Z",
+              "oid": "845ea40f0ba0fac75ffa8e5314c895f1ae7dea81"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2020-07-21T15:21:23Z",
+              "oid": "dd4ddadb009492390f9d4ea355a945da629ce316"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2020-07-22T09:46:05Z",
+              "oid": "a6dcf98a844ba6c9af839561628c25a3d7a64dbd"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2020-07-22T09:52:15Z",
+              "oid": "fcf10ed3c7f330f50c05050053fca3bfb3bb2d32"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2020-07-24T13:46:21Z",
+              "oid": "16d7bd9be0ef3166323880f332d3f8e8ee6b551c"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2020-11-28T10:59:25Z",
+              "oid": "1cae28e4009e07dfad1c7e34ed0e951e0c02916b"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2020-11-28T10:59:15Z",
+              "oid": "232a832eac8f1e4413d221d957ff844bf95fd6a9"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2021-02-03T12:44:37Z",
+              "oid": "0353a8ddd2949fc5aefd7d75beeec16548963e00"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2021-02-03T12:44:50Z",
+              "oid": "95e7b9814b55fc12a9a1416c5464c6fed8eea6df"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2021-02-05T14:32:50Z",
+              "oid": "82f3b0cfc6630201da27181cf0dd67d7a2dd137b"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2021-02-06T07:20:33Z",
+              "oid": "1c51e5c78abe1bf4144b783bb86f9263b5ea12cc"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2021-02-06T07:58:59Z",
+              "oid": "25befa9bc8d36a9de7b1a13c8acbda8aa99658e5"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2021-02-06T07:33:35Z",
+              "oid": "1148c2cbd7b9fe8c7c9de2187911a5bd5893e7c8"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2021-02-06T08:19:31Z",
+              "oid": "ba255cdf3712d6e1493a6c4b82b22a19a0a9adfa"
+            }
+          },
+          {
+            "node": {
+              "committedDate": "2021-03-10T12:09:09Z",
+              "oid": "346d0f673a5625c02ed590be3f6ff3b9a2e7c99e"
+            }
           }
-        }
+        ]
       }
     }
   }
