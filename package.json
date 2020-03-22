@@ -1,17 +1,12 @@
 {
-  "name": "fish-footman",
+  "name": "@wix/colinoscopy",
   "version": "2.0.0",
-  "description": "",
-  "author": "Leon Fedotov <leonf@wix.com>",
   "license": "UNLICENSED",
-  "repository": "https://github.com/leonfedotov/fish-footman.git",
-  "homepage": "https://github.com/leonfedotov/fish-footman",
-  "bugs": "https://github.com/leonfedotov/fish-footman/issues",
-  "keywords": [
-    "probot",
-    "github",
-    "probot-app"
-  ],
+  "private": true,
+  "author": {
+    "name": "LeonFedotov",
+    "email": "leonf@wix.com"
+  },
   "scripts": {
     "dev": "nodemon",
     "start": "probot run ./index.js",
@@ -29,7 +24,6 @@
     "nodemon": "^1.19.4",
     "smee-client": "^1.0.2",
     "standard": "^13.0.2",
-    "sync-glitch-cli": "^2.0.1"
   },
   "engines": {
     "node": "12"
