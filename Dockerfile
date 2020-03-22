@@ -16,8 +16,6 @@ WORKDIR /app/probot/
 COPY --from=builder /app/probot/node_modules/ ./node_modules/
 COPY . ./
 
-RUN npm run build
-
 EXPOSE 3000
 
 COPY .env ./
