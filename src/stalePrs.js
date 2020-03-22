@@ -33,7 +33,7 @@ const validatePr = async (context, pr, masterList) => {
     .value()
 
   if (closestIndex === -1 || closestIndex > maxDistnace) {
-    //setStatus(context, pr, 'failure')
+    // setStatus(context, pr, 'failure')
     return [closestIndex, false]
   }
 
