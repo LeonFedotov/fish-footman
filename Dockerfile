@@ -11,10 +11,6 @@ RUN npm install
 
 FROM node:alpine as app
 
-USER root
-RUN mkdir -p /opt/wix-ci-secrets/.aws && chown -R deployer:deployer /opt/wix-ci-secrets/.aws
-USER deployer
-
 WORKDIR /app/probot/
 
 COPY --from=builder /app/probot/node_modules/ ./node_modules/
