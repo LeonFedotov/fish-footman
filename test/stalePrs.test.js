@@ -15,7 +15,7 @@ const fixtures = {
 }
 const stateMock = (state) => ({ state, context: statusName, description: state === 'success' ? successMessage : failureMessage })
 
-describe('Stale prs', () => {
+xdescribe('Stale prs', () => {
   let probot
   let scope
   beforeEach(() => {
