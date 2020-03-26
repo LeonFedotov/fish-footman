@@ -10,6 +10,8 @@ RUN npm install
 FROM node:alpine as app
 WORKDIR /app/probot/
 COPY --from=builder /app/probot/node_modules/ ./node_modules/
+
+RUN mkdir /templates
 COPY templates/*.erb /templates/
 COPY . ./
 
