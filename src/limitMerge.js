@@ -56,7 +56,12 @@ const createStatus = (
 
 const validatePr = async (context, pr, restrictions) => {
   if (restrictions.some(dir => dir === '*/')) {
-    createStatus(context, pr, 'failure').catch(e => context.log.error(e))
+    try {
+      const res = createStatus(context, pr, 'failure')
+      res.catch && res.catch(e => context.log.error(e))
+    } catch (e) {
+      context.log.error(e)
+    }
     return false
   }
 
