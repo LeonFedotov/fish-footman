@@ -25,9 +25,12 @@
                 "oid": "moo",
                 "timestamp": "2020-02-06T09:43:33Z",
                 "status": {
-                  "context": {
-                    "state": "PENDING"
-                  }
+                  "contexts": [
+                    {
+                      "context": "Colinoscopy",
+                      "state": "PENDING"
+                    }
+                  ]
                 }
               }
             }

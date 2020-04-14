@@ -1,7 +1,7 @@
 {
   "data": {
     "repository": {
-      "result": {
+      "pullRequests": {
         "pageInfo": {
           "endCursor": "Y3Vyc29yOnYyOpHOEL2Jfw==",
           "hasNextPage": false
@@ -13,11 +13,14 @@
             "commits": {
               "nodes": [
                 {
-                  "commit": {
+                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "SUCCESS"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "state": "SUCCESS"
+                        }
+                      ]
                     }
                   }
                 }
@@ -43,9 +46,12 @@
                 {
                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "FAILURE"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "state": "FAILURE"
+                        }
+                      ]
                     }
                   }
                 }
@@ -71,9 +77,12 @@
                 {
                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "FAILURE"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "state": "FAILURE"
+                        }
+                      ]
                     }
                   }
                 }
@@ -99,9 +108,12 @@
                 {
                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "SUCCESS"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "state": "SUCCESS"
+                        }
+                      ]
                     }
                   }
                 }

@@ -22,9 +22,12 @@
                 "oid": "5f9ca41c7ba1f5c0ff8932782b351adf3a8ce46a",
                 "timestamp": "2020-02-06T09:43:33Z",
                 "status": {
-                  "context": {
-                    "state": "PENDING"
-                  }
+                  "contexts": [
+                    {
+                      "context": "Colinoscopy",
+                      "state": "SUCCESS"
+                    }
+                  ]
                 }
               }
             }

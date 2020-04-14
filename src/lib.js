@@ -16,48 +16,65 @@ async function * filesPage (context, number, { pageInfo: { hasNextPage: nextPage
 }
 
 module.exports = {
+  async getIssuesByLabel (context, label) {
+    const query = `
+      query ($owner: String!, $repo: String!, $label: [String!], $cursor: String) {
+        repository(owner: $owner, name: $repo) {
+          issues(states: OPEN, labels: $label, first: 100, after: $cursor, orderBy:{field:CREATED_AT, direction:DESC}) {
+            pageInfo { endCursor, hasNextPage }
+            nodes { body }
+          }
+        }
+      }
+    `
+    const getIssues = async (params = context.repo({ label })) =>
+      context.github.graphql(query, params)
+        .then(async ({ repository: { issues: { nodes, pageInfo: { hasNextPage, endCursor: cursor } } } }) =>
+          hasNextPage ? nodes.concat(await getIssues({ ...params, cursor })) : nodes
+        )
 
-  async pullrequest (context, statusName) {
-    const number = _.get(context, 'payload.pull_request.number', -1)
-    const { sha, commit, files } = await context.github
-      .graphql(getPr, context.repo({ statusName, number }))
+    return getIssues()
+  },
+
+  async pullrequest (context, number) {
+    return context.github
+      .graphql(getPr, context.repo({ number }))
       .then(({
         repository: {
           pullRequest: {
             files,
-            commits: { nodes: [{ commit: { oid, committedDate, status } }] }
+            commits: { nodes: [{ commit: { oid: sha, committedDate, status: { contexts: statuses = [] } } }] }
           }
         }
       }) => ({
-        sha: oid,
-        state: _.get(status, 'context.state', 'PENDING'),
-        commit: { oid, timestamp: +new Date(committedDate) },
-        files
+        sha,
+        number,
+        statuses,
+        timestamp: +new Date(committedDate),
+        files: filesPage(context, number, files)
       }))
-
-    return { sha, number, commit, files: filesPage(context, number, files) }
   },
 
-  async * pullrequests (context, statusName) {
+  async * pullrequests (context) {
     let nextPage = true
     let cursor = null
 
     while (nextPage) {
       const { hasNextPage, endCursor, nodes } = await context.github
-        .graphql(getPrs, context.repo({ cursor, statusName }))
+        .graphql(getPrs, context.repo({ cursor }))
         .then(
-          ({ repository: { result: { nodes, pageInfo: { hasNextPage, endCursor } } } }) =>
+          ({ repository: { pullRequests: { nodes, pageInfo: { hasNextPage, endCursor } } } }) =>
             ({ hasNextPage, endCursor, nodes })
         )
 
       nextPage = hasNextPage
       cursor = endCursor
 
-      yield * nodes.map(({ files: nodes, sha, number, commits: { nodes: [{ commit: { status } }] } }) => ({
+      yield * nodes.map(({ files, sha, number, commits: { nodes: [{ commit: { status: { contexts: statuses = [] } } }] } }) => ({
         sha,
         number,
-        state: _.get(status, 'context.state', 'PENDING'),
-        files: filesPage(context, number, nodes)
+        statuses,
+        files: filesPage(context, number, files)
       }))
     }
   },
@@ -82,7 +99,7 @@ module.exports = {
         .then(
           ({
             repository: {
-              result: {
+              pullRequests: {
                 nodes,
                 pageInfo: { hasNextPage, endCursor }
               }

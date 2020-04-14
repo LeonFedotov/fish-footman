@@ -1,7 +1,7 @@
 {
   "data": {
     "repository": {
-      "result": {
+      "pullRequests": {
         "pageInfo": {
           "endCursor": "Y3Vyc29yOnYyOpHOEL2Jfw==",
           "hasNextPage": false
@@ -15,9 +15,12 @@
                 {
                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "SUCCESS"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "state": "SUCCESS"
+                        }
+                      ]
                     }
                   }
                 }
@@ -43,9 +46,12 @@
                 {
                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "SUCCESS"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "state": "SUCCESS"
+                        }
+                      ]
                     }
                   }
                 }
@@ -71,9 +77,12 @@
                 {
                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "SUCCESS"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "state": "SUCCESS"
+                        }
+                      ]
                     }
                   }
                 }
@@ -99,9 +108,12 @@
                 {
                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "SUCCESS"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "state": "SUCCESS"
+                        }
+                      ]
                     }
                   }
                 }

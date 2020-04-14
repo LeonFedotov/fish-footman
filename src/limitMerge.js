@@ -1,29 +1,17 @@
 const _ = require('lodash')
 const path = require('path')
 
-const { pullrequests, pullrequest } = require('./lib')
-const { getIssues } = require('./queries')
+const { getIssuesByLabel, pullrequests, pullrequest } = require('./lib')
 
 const {
   labelName,
   statusName,
-  statusDescription,
+  // statusDescription,
   failureMessage,
   successMessage
 } = require('./config').limitMerge
 
-const fishyNodes = async (
-  context,
-  params = context.repo({ label: labelName })
-) => context.github
-  .graphql(getIssues, params)
-  .then(async ({ repository: { result: { nodes, pageInfo: { hasNextPage, endCursor: cursor } } } }) =>
-    hasNextPage
-      ? nodes.concat(await fishyNodes(context, { ...params, cursor }))
-      : nodes
-  )
-
-const restrictedDirs = async (context) => _.chain(await fishyNodes(context))
+const restrictedDirs = async (context) => _.chain(await getIssuesByLabel(context, labelName))
   .map(({ body }) => body.split('\r\n'))
   .flatten()
   .uniq()
@@ -31,47 +19,33 @@ const restrictedDirs = async (context) => _.chain(await fishyNodes(context))
   .map((dir) => path.normalize(`${dir.trim()}/`))
   .value()
 
-const createStatus = (
+const setStatus = (
   context,
-  {
-    sha = context.payload.pull_request.head.sha,
-    state: prevState = 'PENDING'
-  },
-  state = 'pending',
-  status = {
-    name: statusName,
-    descr:
-      state === 'success' ? successMessage
-        : state === 'failure' ? failureMessage
-          : statusDescription
-  }
-) => prevState !== state.toUpperCase() && context.github.repos.createStatus(
+  commitSha,
+  name,
+  description,
+  state = 'success',
+  oldState = 'PENDING'
+) => oldState.toUpperCase() !== state.toUpperCase() && context.github.repos.createStatus(
   context.repo({
-    context: status.name,
-    sha,
+    sha: commitSha,
+    context: name,
     state,
-    description: status.descr
+    description
   })
 )
 
-const validatePr = async (context, pr, restrictions) => {
+const validatePr = async (context, { files }, restrictions) => {
   if (restrictions.some(dir => dir === '*/')) {
-    try {
-      const res = createStatus(context, pr, 'failure')
-      res.catch && res.catch(e => context.log.error(e))
-    } catch (e) {
-      context.log.error(e)
-    }
     return false
   }
 
-  for await (const file of pr.files) {
+  for await (const file of files) {
     if (restrictions.some((dir) => file.startsWith(dir))) {
-      createStatus(context, pr, 'failure')
       return false
     }
   }
-  createStatus(context, pr, 'success')
+
   return true
 }
 
@@ -83,9 +57,21 @@ module.exports = {
       const restrictions = await restrictedDirs(context)
       context.log(`Got ${restrictions.length} restrictions`, restrictions)
 
-      for await (const pr of pullrequests(context, statusName)) {
-        validatePr(context, pr, restrictions)
-          .then((res) => context.log(pr.number, res))
+      for await (const pr of pullrequests(context)) {
+        const oldState = _
+          .chain(pr)
+          .get('statuses', [])
+          .find(['context', statusName])
+          .get('state', 'PENDING')
+          .value()
+        const sha = pr.sha
+        if (await validatePr(context, pr, restrictions)) {
+          context.log(pr.number, sha, 'true')
+          setStatus(context, sha, statusName, successMessage, 'success', oldState)
+        } else {
+          context.log(pr.number, sha, 'false')
+          setStatus(context, sha, statusName, failureMessage, 'failure', oldState)
+        }
       }
     } catch (e) {
       context.log.error(e)
@@ -99,9 +85,23 @@ module.exports = {
       const restrictions = await restrictedDirs(context)
       context.log(`Got ${restrictions.length} restrictions`, restrictions)
 
-      const pr = await pullrequest(context, statusName)
-      validatePr(context, pr, restrictions)
-        .then((res) => context.log(pr.number, res))
+      const number = _.get(context, 'payload.pull_request.number', -1)
+      const pr = await pullrequest(context, number)
+      const oldState = _
+        .chain(pr)
+        .get('statuses', [])
+        .find(['context', statusName])
+        .get('state', 'PENDING')
+        .value()
+      const sha = pr.sha
+
+      if (await validatePr(context, pr, restrictions)) {
+        context.log(pr.number, 'true')
+        setStatus(context, sha, statusName, successMessage, 'success', oldState)
+      } else {
+        context.log(pr.number, 'false')
+        setStatus(context, sha, statusName, failureMessage, 'failure', oldState)
+      }
     } catch (e) {
       context.log.error(e)
     }

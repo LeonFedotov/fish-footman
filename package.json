@@ -1,6 +1,6 @@
 {
   "name": "@wix/colinoscopy",
-  "version": "2.0.1",
+  "version": "2.2.0",
   "license": "UNLICENSED",
   "private": true,
   "author": {
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "nodemon",
-    "start": "probot run ./index.js",
+    "start": "probot run ./index.js > /logs/stdout.log 2> /logs/stderr.log",
     "lint": "standard --fix",
     "test": "jest && standard",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage"
