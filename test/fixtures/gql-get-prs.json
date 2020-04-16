@@ -13,7 +13,7 @@
             "commits": {
               "nodes": [
                 {
-                   "commit": {
+                  "commit": {
                     "status": {
                       "contexts": [
                         {

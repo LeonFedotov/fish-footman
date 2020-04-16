@@ -17,6 +17,8 @@ module.exports = app => {
     'pull_request.synchronize', 'pull_request.unlocked'
   ], (context) => Promise.all([limitMerge.revalidatePr(context), stalePrs.revalidatePr(context)]))
 
+  app.on(['status'], stalePrs.revalidatePrFromState)
+
   app.on(['push'], (context) => {
     const { payload: { ref } } = context
     if (ref === 'refs/heads/master') {

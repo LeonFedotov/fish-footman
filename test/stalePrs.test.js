@@ -5,9 +5,11 @@ const { statusName, successMessage, failureMessage } = require('../src/config').
 
 const fixtures = {
   masterCommit: require('./fixtures/push-to-master'),
+  statusChange: require('./fixtures/state-success-change'),
 
   masterCommits: require('./fixtures/gql-master-log'),
-  getPrs: require('./fixtures/gql-get-prs')
+  getPrs: require('./fixtures/gql-get-prs'),
+  getPr: require('./fixtures/gql-get-pr')
 }
 const stateMock = (state) => ({ state, context: statusName, description: state === 'success' ? successMessage : failureMessage })
 jest.setTimeout(10000)
@@ -70,5 +72,54 @@ describe('Stale prs', () => {
     return Promise.all(statuses)
   })
 
-  test.todo('when a pr status changes stale lock should release')
+  test('when a pr status changes stale lock should release', async () => {
+    probot.logger.info('when a pr status changes stale lock should release')
+    scope
+      .post('/graphql')
+      .reply(200, {
+        data: {
+          repository: {
+            object: {
+              associatedPullRequests: {
+                nodes: [
+                  {
+                    number: 51
+                  }
+                ]
+              }
+            }
+          }
+        }
+      })
+
+    scope
+      .post('/graphql')
+      .reply(200, fixtures.masterCommits)
+
+    scope
+      .post('/graphql')
+      .reply(200, fixtures.getPr)
+
+    const statuses = [
+      ['5f9ca41c7ba1f5c0ff8932782b351adf3a8ce46a', 'success']
+    ].map(([id, status]) => new Promise((resolve, reject) => scope
+      .post(
+        '/repos/wix-private/santa-editor/statuses/' + id,
+        (body) => {
+          try {
+            expect(body).toMatchObject(stateMock(status))
+            resolve(true)
+          } catch (e) {
+            reject(e)
+          }
+          return true
+        }
+      )
+      .reply(200, {})
+    ))
+
+    await probot.receive({ name: 'status', payload: fixtures.statusChange })
+
+    return Promise.all(statuses)
+  })
 })

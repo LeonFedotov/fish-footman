@@ -86,6 +86,27 @@ module.exports = {
     }
   },
 
+  async prNumberFromCommit (context, sha) {
+    const query = `
+      query($owner: String! $repo: String! $sha: GitObjectID!) {
+        repository(name: $repo owner: $owner) {
+            object(oid: $sha) {
+            ... on Commit {
+              associatedPullRequests(last:1) {
+                nodes {
+                 number
+                }
+              }
+            }
+          }
+        }
+      }
+    `
+    const result = await context.github.graphql(query, context.repo({ sha }))
+
+    return _.get(result, 'repository.object.associatedPullRequests.nodes.0.number', -1)
+  },
+
   async masterCommits (context, first = 20) {
     const commits = await context.github.graphql(getMasterLog, context.repo({ first }))
 

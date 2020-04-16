@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const { masterCommits, pullrequests, pullrequest, setStatus } = require('./lib')
+const { masterCommits, pullrequests, pullrequest, setStatus, prNumberFromCommit } = require('./lib')
 const {
   maxDistnace,
   statusName,
@@ -25,6 +25,7 @@ const validatePr = async (context, { number, statuses }, masterList) => {
       .get('0.sha')
       .thru(sha => _.findIndex(masterList, { sha }))
       .value()
+
     if (closestIndex === -1 || closestIndex > maxDistnace) {
       return false
     }
@@ -52,6 +53,37 @@ module.exports = {
           setStatus(context, sha, { name: statusName, description: successMessage }, 'success', oldState)
         } else {
           context.log(pr.number, sha, 'false')
+          setStatus(context, sha, { name: statusName, description: failureMessage }, 'failure', oldState)
+        }
+      }
+    } catch (e) {
+      context.log.error(e)
+    }
+  },
+
+  async revalidatePrFromState (context) {
+    context.log('stale from state:')
+    try {
+      const { payload: { state, target_url: targetUrl, sha } } = context
+      if (state.toUpperCase() === 'SUCCESS' &&
+        targetUrl && targetUrl.startsWith(statusUrlMatch)
+      ) {
+        const number = await prNumberFromCommit(context, sha)
+        const masterList = await masterCommits(context)
+        const pr = await pullrequest(context, number)
+
+        const oldState = _
+          .chain(pr)
+          .get('statuses', [])
+          .find(['context', statusName])
+          .get('state', 'PENDING')
+          .value()
+
+        if (await validatePr(context, pr, masterList)) {
+          context.log(pr.number, 'true')
+          setStatus(context, sha, { name: statusName, description: successMessage }, 'success', oldState)
+        } else {
+          context.log(pr.number, 'false')
           setStatus(context, sha, { name: statusName, description: failureMessage }, 'failure', oldState)
         }
       }
