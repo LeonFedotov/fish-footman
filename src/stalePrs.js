@@ -62,12 +62,12 @@ module.exports = {
   },
 
   async revalidatePrFromState (context) {
-    context.log('stale from state:')
     try {
       const { payload: { state, target_url: targetUrl, sha } } = context
       if (state.toUpperCase() === 'SUCCESS' &&
         targetUrl && targetUrl.startsWith(statusUrlMatch)
       ) {
+        context.log('stale from state:')
         const number = await prNumberFromCommit(context, sha)
         const masterList = await masterCommits(context)
         const pr = await pullrequest(context, number)
