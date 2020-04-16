@@ -1,56 +1,59 @@
 const _ = require('lodash')
-
+const { masterCommits, pullrequests, pullrequest, setStatus } = require('./lib')
 const {
   maxDistnace,
   statusName,
-  statusDescription,
   failureMessage,
-  successMessage
+  successMessage,
+  statusUrlMatch
 } = require('./config').stalePrs
 
-const { lastCommitOfPrs, masterCommits, pullrequest } = require('./lib')
+const validatePr = async (context, { number, statuses }, masterList) => {
+  const prTimestamp = statuses
+    .filter(({ state, targetUrl }) =>
+      state === 'SUCCESS' &&
+      targetUrl && targetUrl.startsWith(statusUrlMatch)
+    )
+    .map(({ timestamp }) => +new Date(timestamp))
+    .sort((a, b) => b - a)
+    .pop()
 
-const setStatus = (context, pr, state, status = {
-  name: statusName,
-  descr: state === 'success' ? successMessage
-    : state === 'failure' ? failureMessage
-      : statusDescription
-}) => pr.state !== state.toUpperCase() && context.github.repos.createStatus(
-  context.repo({
-    sha: pr.sha,
-    state,
-    description: status.descr,
-    context: status.name
-  })
-)
-
-const validatePr = async (context, pr, masterList) => {
-  const closestIndex = _
-    .chain(masterList)
-    .sortBy([({ timestamp }) => Math.abs(pr.timestamp - timestamp)])
-    .get('0.oid')
-    .thru(oid => _.findIndex(masterList, { oid }))
-    .value()
-
-  if (closestIndex === -1 || closestIndex > maxDistnace) {
-    // setStatus(context, pr, 'failure')
-    return [closestIndex, false]
+  if (!_.isUndefined(prTimestamp)) {
+    const closestIndex = _
+      .chain(masterList)
+      .sortBy([({ timestamp }) => Math.abs(prTimestamp - timestamp)])
+      .get('0.sha')
+      .thru(sha => _.findIndex(masterList, { sha }))
+      .value()
+    if (closestIndex === -1 || closestIndex > maxDistnace) {
+      return false
+    }
   }
 
-  setStatus(context, pr, 'success')
-  return [closestIndex, true]
+  return true
 }
 
 module.exports = {
   async revalidateRepo (context) {
+    context.log('stale prs:')
     try {
-      context.log('Getting master commits')
       const masterList = await masterCommits(context)
-      context.log(`Got ${masterList.length} masterCommits`)
+      for await (const pr of pullrequests(context)) {
+        const sha = pr.sha
+        const oldState = _
+          .chain(pr)
+          .get('statuses', [])
+          .find(['context', statusName])
+          .get('state', 'PENDING')
+          .value()
 
-      for await (const pr of lastCommitOfPrs(context, statusName)) {
-        validatePr(context, pr, masterList)
-          .then((res) => context.log(pr.number, res))
+        if (await validatePr(context, pr, masterList)) {
+          context.log(pr.number, sha, 'true')
+          setStatus(context, sha, { name: statusName, description: successMessage }, 'success', oldState)
+        } else {
+          context.log(pr.number, sha, 'false')
+          setStatus(context, sha, { name: statusName, description: failureMessage }, 'failure', oldState)
+        }
       }
     } catch (e) {
       context.log.error(e)
@@ -58,14 +61,27 @@ module.exports = {
   },
 
   async revalidatePr (context) {
+    context.log('stale pr:')
     try {
-      context.log('Getting master commits')
       const masterList = await masterCommits(context)
-      context.log(`Got ${masterList.length} masterCommits`)
+      const number = _.get(context, 'payload.pull_request.number', -1)
+      const pr = await pullrequest(context, number)
 
-      const pr = await pullrequest(context, statusName)
-      validatePr(context, pr, masterList)
-        .then((res) => context.log(pr.number, res))
+      const sha = pr.sha
+      const oldState = _
+        .chain(pr)
+        .get('statuses', [])
+        .find(['context', statusName])
+        .get('state', 'PENDING')
+        .value()
+
+      if (await validatePr(context, pr, masterList)) {
+        context.log(pr.number, 'true')
+        setStatus(context, sha, { name: statusName, description: successMessage }, 'success', oldState)
+      } else {
+        context.log(pr.number, 'false')
+        setStatus(context, sha, { name: statusName, description: failureMessage }, 'failure', oldState)
+      }
     } catch (e) {
       context.log.error(e)
     }

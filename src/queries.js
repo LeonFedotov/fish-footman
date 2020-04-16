@@ -15,6 +15,7 @@ module.exports = {
                     contexts {
                       context
                       description
+                      targetUrl
                       timestamp: createdAt
                       state
                      }
@@ -23,7 +24,7 @@ module.exports = {
               }
             }
 
-            files(first:100) {
+            files(first: 10) {
               pageInfo { endCursor, hasNextPage }
               nodes { path }
             }
@@ -40,7 +41,7 @@ module.exports = {
           number
           sha:headRefOid
 
-          files(first:100) {
+          files(first: 10) {
             pageInfo { endCursor, hasNextPage }
             nodes { path }
           }
@@ -48,12 +49,12 @@ module.exports = {
           commits(last: 1) {
             nodes {
               commit {
-                oid
                 timestamp: committedDate
                 status {
                   contexts {
                     context
                     description
+                    targetUrl
                     timestamp: createdAt
                     state
                    }
@@ -80,13 +81,19 @@ module.exports = {
   `,
 
   getMasterLog: `
-    query($owner: String! $repo: String!) {
+    query($owner: String! $repo: String! $first: Int!) {
       repository(name: $repo owner: $owner) {
-        pullRequests(last: 20 states: MERGED) {
-          nodes {
-            node: mergeCommit {
-              committedDate
-              oid
+        ref(qualifiedName: "master" ) {
+          target {
+            ... on Commit {
+              history(first: $first) {
+                edges {
+                  node {
+                    sha: oid
+                    timestamp: committedDate
+                  }
+                }
+              }
             }
           }
         }
@@ -94,27 +101,12 @@ module.exports = {
     }
   `,
 
-  getPrsCommits: `
-    query ($owner: String!, $repo: String!, $statusName: String!, $cursor: String) {
+  getIssuesByLabel: `
+    query ($owner: String!, $repo: String!, $label: [String!], $cursor: String) {
       repository(owner: $owner, name: $repo) {
-        result: pullRequests(states: OPEN, first: 100, after: $cursor, orderBy:{field:CREATED_AT, direction:DESC}) {
+        issues(states: OPEN, labels: $label, first: 20, after: $cursor, orderBy:{field:CREATED_AT, direction:DESC}) {
           pageInfo { endCursor, hasNextPage }
-          nodes {
-            sha: headRefOid
-            number
-            commits(last: 1) {
-              nodes {
-                commit {
-                  committedDate
-                  status {
-                    context(name: $statusName) {
-                      state
-                    }
-                  }
-                }
-              }
-            }
-          }
+          nodes { body, url }
         }
       }
     }
