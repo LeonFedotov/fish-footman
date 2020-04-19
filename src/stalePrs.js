@@ -38,7 +38,7 @@ const validatePr = async (context, { number, statuses }, masterList) => {
 
 module.exports = {
   async revalidateRepo (context) {
-    context.log('stale prs:')
+    context.log('stale prs:', context.repo())
     try {
       const masterList = await masterCommits(context)
       for await (const pr of pullrequests(context)) {
@@ -69,7 +69,7 @@ module.exports = {
       if (state.toUpperCase() === 'SUCCESS' &&
         targetUrl && targetUrl.startsWith(statusUrlMatch)
       ) {
-        context.log('stale from state:', sha)
+        context.log('stale from state:', sha, context.repo())
         const number = await prNumberFromCommit(context, sha)
         if (number) {
           const masterList = await masterCommits(context)
@@ -100,7 +100,7 @@ module.exports = {
   },
 
   async revalidatePr (context) {
-    context.log('stale pr:')
+    context.log('stale pr:', context.repo())
     try {
       const masterList = await masterCommits(context)
       const number = _.get(context, 'payload.pull_request.number', -1)

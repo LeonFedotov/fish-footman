@@ -37,7 +37,7 @@ const validatePr = async (context, { files }, restrictions) => {
 
 module.exports = {
   async revalidateRepo (context) {
-    context.log('limitMerge repo:')
+    context.log('limitMerge repo:', context.repo())
     try {
       const restrictions = await restrictedDirs(context)
       context.log(`Got ${restrictions.length} restrictions`, restrictions)
@@ -67,7 +67,7 @@ module.exports = {
   },
 
   async revalidatePr (context) {
-    context.log('limitMerge pr:')
+    context.log('limitMerge pr:', context.repo())
     try {
       const restrictions = await restrictedDirs(context)
       context.log(`Got ${restrictions.length} restrictions`, restrictions)
