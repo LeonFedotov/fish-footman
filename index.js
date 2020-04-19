@@ -4,6 +4,7 @@ const stalePrs = require('./src/stalePrs')
 
 module.exports = app => {
   process.env.NODE_ENV === 'production' && app.log.target.addStream({
+    levelInString: !!process.env.LOG_LEVEL_IN_STRING,
     path: path.join('/logs/colinoscopy.log')
   })
 
