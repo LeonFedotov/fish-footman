@@ -91,7 +91,7 @@ module.exports = {
             setStatus(context, sha, { name: statusName, description: failureMessage }, 'failure', oldState)
           }
         } else {
-          context.error('invalid pr number for sha', sha)
+          context.log.error('invalid pr number for sha', sha)
         }
       }
     } catch (e) {
