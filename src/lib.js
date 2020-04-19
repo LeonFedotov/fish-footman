@@ -104,7 +104,7 @@ module.exports = {
     `
     const result = await context.github.graphql(query, context.repo({ sha }))
 
-    return _.get(result, 'repository.object.associatedPullRequests.nodes.0.number', -1)
+    return _.get(result, 'repository.object.associatedPullRequests.nodes.0.number', false)
   },
 
   async masterCommits (context, first = 20) {

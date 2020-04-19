@@ -27,11 +27,13 @@ const validatePr = async (context, { number, statuses }, masterList) => {
       .value()
 
     if (closestIndex === -1 || closestIndex > maxDistnace) {
-      return false
+      return [false, closestIndex]
+    } else {
+      return [true, closestIndex]
     }
   }
 
-  return true
+  return [true]
 }
 
 module.exports = {
@@ -47,12 +49,12 @@ module.exports = {
           .find(['context', statusName])
           .get('state', 'PENDING')
           .value()
-
-        if (await validatePr(context, pr, masterList)) {
-          context.log(pr.number, sha, 'true')
+        const [isValid, closestIndex] = await validatePr(context, pr, masterList)
+        if (isValid) {
+          context.log(pr.number, sha, closestIndex, 'true')
           setStatus(context, sha, { name: statusName, description: successMessage }, 'success', oldState)
         } else {
-          context.log(pr.number, sha, 'false')
+          context.log(pr.number, sha, closestIndex, 'false')
           setStatus(context, sha, { name: statusName, description: failureMessage }, 'failure', oldState)
         }
       }
@@ -67,24 +69,29 @@ module.exports = {
       if (state.toUpperCase() === 'SUCCESS' &&
         targetUrl && targetUrl.startsWith(statusUrlMatch)
       ) {
-        context.log('stale from state:')
+        context.log('stale from state:', sha)
         const number = await prNumberFromCommit(context, sha)
-        const masterList = await masterCommits(context)
-        const pr = await pullrequest(context, number)
+        if (number) {
+          const masterList = await masterCommits(context)
+          const pr = await pullrequest(context, number)
 
-        const oldState = _
-          .chain(pr)
-          .get('statuses', [])
-          .find(['context', statusName])
-          .get('state', 'PENDING')
-          .value()
+          const oldState = _
+            .chain(pr)
+            .get('statuses', [])
+            .find(['context', statusName])
+            .get('state', 'PENDING')
+            .value()
 
-        if (await validatePr(context, pr, masterList)) {
-          context.log(pr.number, 'true')
-          setStatus(context, sha, { name: statusName, description: successMessage }, 'success', oldState)
+          const [isValid, closestIndex] = await validatePr(context, pr, masterList)
+          if (isValid) {
+            context.log(pr.number, closestIndex, 'true')
+            setStatus(context, sha, { name: statusName, description: successMessage }, 'success', oldState)
+          } else {
+            context.log(pr.number, closestIndex, 'false')
+            setStatus(context, sha, { name: statusName, description: failureMessage }, 'failure', oldState)
+          }
         } else {
-          context.log(pr.number, 'false')
-          setStatus(context, sha, { name: statusName, description: failureMessage }, 'failure', oldState)
+          context.error('invalid pr number for sha', sha)
         }
       }
     } catch (e) {
@@ -107,11 +114,13 @@ module.exports = {
         .get('state', 'PENDING')
         .value()
 
-      if (await validatePr(context, pr, masterList)) {
-        context.log(pr.number, 'true')
+      const [isValid, closestIndex] = await validatePr(context, pr, masterList)
+
+      if (isValid) {
+        context.log(pr.number, closestIndex, 'true')
         setStatus(context, sha, { name: statusName, description: successMessage }, 'success', oldState)
       } else {
-        context.log(pr.number, 'false')
+        context.log(pr.number, closestIndex, 'false')
         setStatus(context, sha, { name: statusName, description: failureMessage }, 'failure', oldState)
       }
     } catch (e) {
