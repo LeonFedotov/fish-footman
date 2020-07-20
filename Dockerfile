@@ -13,9 +13,6 @@ COPY --from=builder /app/probot/node_modules/ ./node_modules/
 
 
 COPY . ./
-RUN ln -s /configs/env /app/probot/.env
-RUN mkdir -p /templates
-COPY templates/*.erb /templates/
 
 EXPOSE 3000
 
