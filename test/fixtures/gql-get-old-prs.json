@@ -1,98 +1,107 @@
 {
-    "data": {
-        "repository": {
-            "result": {
-                "pageInfo": {
-                    "endCursor": "Y3Vyc29yOnYyOpHOEL2Jfw==",
-                    "hasNextPage": false
-                },
-                "nodes": [
-                    {
-                        "sha": "e4e337875aef068f4f3cbe8f1831fcb1781b8c6b",
-                        "number": 22,
-                        "commits": {
-                            "nodes": [
-                                {
-                                    "commit": {
-                                        "status": {
-                                            "context": {
-                                                "state": "SUCCESS"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        "files": {
-                            "pageInfo": {
-                                "endCursor": "MQ",
-                                "hasNextPage": false
-                            },
-                            "nodes": [
-                                {
-                                    "path": "docs/index.html"
-                                }
-                            ]
+  "data": {
+    "repository": {
+      "pullRequests": {
+        "pageInfo": {
+          "endCursor": "Y3Vyc29yOnYyOpHOEL2Jfw==",
+          "hasNextPage": false
+        },
+        "nodes": [
+          {
+            "sha": "e4e337875aef068f4f3cbe8f1831fcb1781b8c6b",
+            "number": 22,
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "status": {
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "state": "SUCCESS"
                         }
-                    },
-                    {
-                        "sha": "123124",
-                        "number": 24,
-                        "commits": {
-                            "nodes": [
-                                {
-                                    "commit": {
-                                        "status": {
-                                            "context": {
-                                                "state": "SUCCESS"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        "files": {
-                            "pageInfo": {
-                                "endCursor": "MQ",
-                                "hasNextPage": false
-                            },
-                            "nodes": [
-                                {
-                                    "path": "docs/index.html"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "sha": "123123",
-                        "number": 23,
-                        "commits": {
-                            "nodes": [
-                                {
-                                    "commit": {
-                                        "status": {
-                                            "context": {
-                                                "state": "FAILURE"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        "files": {
-                            "pageInfo": {
-                                "endCursor": "MQ",
-                                "hasNextPage": false
-                            },
-                            "nodes": [
-                                {
-                                    "path": "docs/index.html"
-                                }
-                            ]
-                        }
+                      ]
                     }
-                ]
+                  }
+                }
+              ]
+            },
+            "files": {
+              "pageInfo": {
+                "endCursor": "MQ",
+                "hasNextPage": false
+              },
+              "nodes": [
+                {
+                  "path": "docs/index.html"
+                }
+              ]
             }
-        }
+          },
+          {
+            "sha": "123124",
+            "number": 24,
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "status": {
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "state": "SUCCESS"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            "files": {
+              "pageInfo": {
+                "endCursor": "MQ",
+                "hasNextPage": false
+              },
+              "nodes": [
+                {
+                  "path": "docs/index.html"
+                }
+              ]
+            }
+          },
+          {
+            "sha": "123123",
+            "number": 23,
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "status": {
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "state": "FAILURE"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            "files": {
+              "pageInfo": {
+                "endCursor": "MQ",
+                "hasNextPage": false
+              },
+              "nodes": [
+                {
+                  "path": "docs/index.html"
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
+  }
 }

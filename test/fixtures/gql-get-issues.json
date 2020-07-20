@@ -1,13 +1,14 @@
 {
   "data": {
     "repository": {
-      "result": {
+      "issues": {
         "pageInfo": {
           "endCursor": "Y3Vyc29yOnYyOpHOGqBEtQ==",
           "hasNextPage": false
         },
         "nodes": [
           {
+            "url": "https://github.com/LeonFedotov/fish-footman/issues/9",
             "body": "docs"
           }
         ]

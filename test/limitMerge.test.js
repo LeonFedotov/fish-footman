@@ -21,8 +21,15 @@ const fixtures = {
   wildcardPrs: require('./fixtures/gql-get-prs-wildcard')
 }
 
-const stateMock = (state) => ({ state, context: statusName, description: state === 'success' ? successMessage : failureMessage })
+const stateMock = (state) => ({
+  state,
+  context: statusName,
+  description: state === 'success' ? successMessage : failureMessage,
+  ...(state === 'failure' ? { target_url: expect.stringMatching(/^https:\/\/github.com\/.*/) } : {})
+})
+
 jest.setTimeout(10000)
+
 describe('LimitMerge - Limit merges to master based on directories specified in issues', () => {
   let probot
   let scope
@@ -31,16 +38,15 @@ describe('LimitMerge - Limit merges to master based on directories specified in 
 
     scope = nock('https://api.github.com')
 
-    scope.on('error', (err) => console.error(err))
-
     probot = createProbot({ id: 1, cert: 'test', githubToken: 'test' })
     probot.load(myProbotApp)
 
-    // scope.log(console.log)
+    scope.on('error', (err) => probot.logger.error(err))
+    scope.log((...args) => probot.logger.info(...args))
   })
 
   afterEach(() => {
-    // console.log('pending mocks: ' + scope.pendingMocks())
+    probot.logger.info('pending mocks: ', scope.pendingMocks())
     expect(scope.isDone()).toBe(true)
 
     nock.cleanAll()
@@ -48,6 +54,7 @@ describe('LimitMerge - Limit merges to master based on directories specified in 
   })
 
   test('when a fishy issue is created prs that touch fishy paths with be blocked', async () => {
+    probot.logger.info('when a fishy issue is created prs that touch fishy paths with be blocked')
     scope
       .post('/graphql')
       .reply(200, fixtures.getIssues)
@@ -56,48 +63,48 @@ describe('LimitMerge - Limit merges to master based on directories specified in 
       .post('/graphql')
       .reply(200, fixtures.getPrs)
 
-    const statusChange = new Promise((resolve) => scope
+    const statuses = [
+      ['e4e337875aef068f4f3cbe8f1831fcb1781b8c6b', 'failure'],
+      ['666', 'success']
+    ].map(([id, status]) => new Promise((resolve, reject) => scope
       .post(
-        '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
+        '/repos/LeonFedotov/fish-footman/statuses/' + id,
         (body) => {
-          expect(body).toMatchObject(stateMock('failure'))
-          resolve()
+          try {
+            expect(body).toMatchObject(stateMock(status))
+            resolve(true)
+          } catch (e) {
+            reject(e)
+          }
           return true
         }
       )
       .reply(200, {})
-    )
-
-    const statusChange2 = new Promise((resolve) => scope
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/666',
-        (body) => {
-          expect(body).toMatchObject(stateMock('success'))
-          resolve()
-          return true
-        }
-      )
-      .reply(200, {})
-    )
+    ))
 
     await probot.receive({ name: 'issues', payload: fixtures.issueCreated })
 
-    return Promise.all([statusChange, statusChange2])
+    return Promise.all(statuses)
   })
 
   test('when a pr is created with restricted paths bot will block it', async () => {
+    probot.logger.info('when a pr is created with restricted paths bot will block it')
     scope
       .post('/graphql')
       .reply(200, fixtures.getIssues)
       .post('/graphql')
       .reply(200, fixtures.getPr)
 
-    const statusChange = new Promise((resolve) => scope
+    const statusChange = new Promise((resolve, reject) => scope
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/5f9ca41c7ba1f5c0ff8932782b351adf3a8ce46a',
         (body) => {
-          expect(body).toMatchObject(stateMock('failure'))
-          resolve()
+          try {
+            expect(body).toMatchObject(stateMock('failure'))
+            resolve(true)
+          } catch (e) {
+            reject(e)
+          }
           return true
         }
       )
@@ -108,18 +115,23 @@ describe('LimitMerge - Limit merges to master based on directories specified in 
   })
 
   test('when a pr is changed to not touch restricted paths pr is unlocked', async () => {
+    probot.logger.info('when a pr is changed to not touch restricted paths pr is unlocked')
     scope
       .post('/graphql')
       .reply(200, fixtures.getIssues)
       .post('/graphql')
       .reply(200, fixtures.fixedprFiles)
 
-    const statusChange = new Promise((resolve) => scope
+    const statusChange = new Promise((resolve, reject) => scope
       .post(
         '/repos/LeonFedotov/fish-footman/statuses/moo',
         (body) => {
-          expect(body).toMatchObject(stateMock('success'))
-          resolve()
+          try {
+            expect(body).toMatchObject(stateMock('success'))
+            resolve(true)
+          } catch (e) {
+            reject(e)
+          }
           return true
         }
       )
@@ -130,161 +142,132 @@ describe('LimitMerge - Limit merges to master based on directories specified in 
   })
 
   test('when a fishy issue is closed affected prs are unlocked', async () => {
+    probot.logger.info('when a fishy issue is closed affected prs are unlocked')
     scope
       .post('/graphql')
       .reply(200, fixtures.noIssues)
       .post('/graphql')
       .reply(200, fixtures.getPrs)
 
-    const statusChange = new Promise((resolve) => scope
+    const statuses = [
+      ['888', 'success'],
+      ['666', 'success']
+    ].map(([id, status]) => new Promise((resolve, reject) => scope
       .post(
-        '/repos/LeonFedotov/fish-footman/statuses/888',
+        '/repos/LeonFedotov/fish-footman/statuses/' + id,
         (body) => {
-          expect(body).toMatchObject(stateMock('success'))
-          resolve()
+          try {
+            expect(body).toMatchObject(stateMock(status))
+            resolve(true)
+          } catch (e) {
+            reject(e)
+          }
           return true
         }
       )
       .reply(200, {})
-    )
+    ))
 
-    const statusChange2 = new Promise((resolve) => scope
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/666',
-        (body) => {
-          expect(body).toMatchObject(stateMock('success'))
-          resolve()
-          return true
-        }
-      )
-      .reply(200, {})
-    )
     await probot.receive({ name: 'issues', payload: fixtures.issueClosed })
-    return Promise.all([statusChange, statusChange2])
+
+    return Promise.all(statuses)
   })
 
   test('when a fishy issue is edited affected prs are updated', async () => {
+    probot.logger.info('when a fishy issue is edited affected prs are updated')
     scope
       .post('/graphql')
       .reply(200, fixtures.noIssues)
       .post('/graphql')
       .reply(200, fixtures.getPrs)
 
-    const statusChange = new Promise((resolve) => scope
+    const statuses = [
+      ['888', 'success'],
+      ['666', 'success']
+    ].map(([id, status]) => new Promise((resolve, reject) => scope
       .post(
-        '/repos/LeonFedotov/fish-footman/statuses/888',
+        '/repos/LeonFedotov/fish-footman/statuses/' + id,
         (body) => {
-          expect(body).toMatchObject(stateMock('success'))
-          resolve()
+          try {
+            expect(body).toMatchObject(stateMock(status))
+            resolve(true)
+          } catch (e) {
+            reject(e)
+          }
           return true
         }
       )
       .reply(200)
-    )
+    ))
 
-    const statusChange2 = new Promise((resolve) => scope
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/666',
-        (body) => {
-          expect(body).toMatchObject(stateMock('success'))
-          resolve()
-          return true
-        }
-      )
-      .reply(200)
-    )
     await probot.receive({ name: 'issues', payload: fixtures.issueEdited })
-    return Promise.all([statusChange, statusChange2])
+
+    return Promise.all(statuses)
   })
 
   test('when a fishy issue is edited only affected prs are updated', async () => {
+    probot.logger.info('when a fishy issue is edited only affected prs are updated')
     scope
       .post('/graphql')
       .reply(200, fixtures.getIssues)
       .post('/graphql')
       .reply(200, fixtures.getOldPrs)
 
-    const statusChange = new Promise((resolve) => scope
+    const statuses = [
+      ['123124', 'failure'],
+      ['e4e337875aef068f4f3cbe8f1831fcb1781b8c6b', 'failure']
+    ].map(([id, status]) => new Promise((resolve, reject) => scope
       .post(
-        '/repos/LeonFedotov/fish-footman/statuses/123124',
+        '/repos/LeonFedotov/fish-footman/statuses/' + id,
         (body) => {
-          expect(body).toMatchObject(stateMock('failure'))
-          resolve()
+          try {
+            expect(body).toMatchObject(stateMock(status))
+            resolve(true)
+          } catch (e) {
+            reject(e)
+          }
           return true
         }
       )
       .reply(200)
-    )
+    ))
 
-    const statusChange2 = new Promise((resolve) => scope
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
-        (body) => {
-          expect(body).toMatchObject(stateMock('failure'))
-          resolve()
-          return true
-        }
-      )
-      .reply(200)
-    )
     await probot.receive({ name: 'issues', payload: fixtures.issueEdited })
 
-    return Promise.all([statusChange, statusChange2])
+    return Promise.all(statuses)
   })
 
   test('when a fishy issue is created with a wildcard all prs are blocked', async () => {
+    probot.logger.info('when a fishy issue is created with a wildcard all prs are blocked')
     scope
       .post('/graphql')
       .reply(200, fixtures.wildIssues)
       .post('/graphql')
       .reply(200, fixtures.wildcardPrs)
 
-    const statusChange = new Promise((resolve) => scope
+    const statuses = [
+      ['888', 'failure'],
+      ['e4e337875aef068f4f3cbe8f1831fcb1781b8c6b', 'failure'],
+      ['666', 'failure'],
+      ['777', 'failure']
+    ].map(([id, status]) => new Promise((resolve, reject) => scope
       .post(
-        '/repos/LeonFedotov/fish-footman/statuses/e4e337875aef068f4f3cbe8f1831fcb1781b8c6b',
+        '/repos/LeonFedotov/fish-footman/statuses/' + id,
         (body) => {
-          expect(body).toMatchObject(stateMock('failure'))
+          try {
+            expect(body).toMatchObject(stateMock(status))
+            resolve(true)
+          } catch (e) {
+            reject(e)
+          }
           return true
         }
       )
-      .reply(() => { resolve(); return 200 })
-    )
-
-    const statusChange2 = new Promise((resolve) => scope
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/888',
-        (body) => {
-          expect(body).toMatchObject(stateMock('failure'))
-          return true
-        }
-      )
-      .reply(() => { resolve(); return 200 })
-    )
-
-    const statusChange3 = new Promise((resolve) => scope
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/666',
-        (body) => {
-          expect(body).toMatchObject(stateMock('failure'))
-          return true
-        }
-      )
-      .reply(() => { resolve(); return 200 })
-    )
-
-    const statusChange4 = new Promise((resolve) => scope
-      .post(
-        '/repos/LeonFedotov/fish-footman/statuses/777',
-        (body) => {
-          expect(body).toMatchObject(stateMock('failure'))
-          return true
-        }
-      )
-      .reply(() => { resolve(); return 200 })
-    )
+      .reply(200, {})
+    ))
 
     await probot.receive({ name: 'issues', payload: fixtures.wildcardIssue })
 
-    return Promise.all([statusChange, statusChange2, statusChange3, statusChange4])
+    return Promise.all(statuses)
   })
 })

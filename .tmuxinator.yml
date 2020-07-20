@@ -1,0 +1,14 @@
+# ./.tmuxinator.yml
+
+name: log-colinoscopy
+root: ./
+
+on_project_start: kubectl get pods --context 42 -n koala | tail -2 | awk '{print $1}' > servers.log
+
+windows:
+  - logs:
+      layout: even-horizontal
+      panes:
+        - kubectl --context 42 -n koala logs `head -1 servers.log` -f
+        - kubectl --context 42 -n koala logs `tail -1 servers.log` -f
+

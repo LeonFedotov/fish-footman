@@ -1,129 +1,133 @@
 {
   "data": {
     "repository": {
-      "pullRequests": {
-        "nodes": [
-          {
-            "node": {
-              "committedDate": "2019-06-02T10:18:00Z",
-              "oid": "adc7c1e80082076632d68f3e0305aed27c2bd981"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2019-06-03T10:04:49Z",
-              "oid": "2f9ff2d4d8c615274896b735d4442ca7b0a2d2fe"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2019-06-03T11:40:07Z",
-              "oid": "bd8d215f19ce9de05fce976b5306c615cfe3f237"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2019-06-03T11:48:14Z",
-              "oid": "ea91f1e492e20e51ad11db33d5a06f9504de2d7f"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2019-07-16T12:06:24Z",
-              "oid": "bee70598c52bf7b88539ae73de7a913e16a4ab4a"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2019-07-21T12:22:31Z",
-              "oid": "845ea40f0ba0fac75ffa8e5314c895f1ae7dea81"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2019-07-21T15:21:23Z",
-              "oid": "dd4ddadb009492390f9d4ea355a945da629ce316"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2019-07-22T09:46:05Z",
-              "oid": "a6dcf98a844ba6c9af839561628c25a3d7a64dbd"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2019-07-22T09:52:15Z",
-              "oid": "fcf10ed3c7f330f50c05050053fca3bfb3bb2d32"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2019-07-24T13:46:21Z",
-              "oid": "16d7bd9be0ef3166323880f332d3f8e8ee6b551c"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2019-11-28T10:59:25Z",
-              "oid": "1cae28e4009e07dfad1c7e34ed0e951e0c02916b"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2019-11-28T10:59:15Z",
-              "oid": "232a832eac8f1e4413d221d957ff844bf95fd6a9"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2020-02-03T12:44:37Z",
-              "oid": "0353a8ddd2949fc5aefd7d75beeec16548963e00"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2020-02-03T12:44:50Z",
-              "oid": "95e7b9814b55fc12a9a1416c5464c6fed8eea6df"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2020-02-05T14:32:50Z",
-              "oid": "82f3b0cfc6630201da27181cf0dd67d7a2dd137b"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2020-02-06T07:20:33Z",
-              "oid": "1c51e5c78abe1bf4144b783bb86f9263b5ea12cc"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2020-02-06T07:58:59Z",
-              "oid": "25befa9bc8d36a9de7b1a13c8acbda8aa99658e5"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2020-02-06T07:33:35Z",
-              "oid": "1148c2cbd7b9fe8c7c9de2187911a5bd5893e7c8"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2020-02-06T08:19:31Z",
-              "oid": "ba255cdf3712d6e1493a6c4b82b22a19a0a9adfa"
-            }
-          },
-          {
-            "node": {
-              "committedDate": "2020-03-10T12:09:09Z",
-              "oid": "346d0f673a5625c02ed590be3f6ff3b9a2e7c99e"
-            }
+      "ref": {
+        "target": {
+          "history": {
+            "edges": [
+              {
+                "node": {
+                  "sha": "e56093e78571526d993a44040df530d5f8472231",
+                  "timestamp": "2020-04-16T15:12:32Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "40bba839e37e19d08327bd9d72a3132875ed31cf",
+                  "timestamp": "2020-04-16T13:25:03Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "7e91095370d823a5004f2f28164672264cc56ebe",
+                  "timestamp": "2020-04-16T09:59:43Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "bc0d340fc12fc55f9fe879d36f24b1f4146dd80e",
+                  "timestamp": "2020-04-16T09:51:44Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "0dcc64971410491eccb83a6154d13962093badb3",
+                  "timestamp": "2020-04-16T09:16:04Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "e33994043ce3ac85e45b0d7559a10c9afe71444a",
+                  "timestamp": "2020-04-16T09:14:18Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "105fa93f8a2c1088cede2e74cd3eb093dc897be7",
+                  "timestamp": "2020-04-16T09:11:00Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "0b36a1cf0acc00c663afb3eb62604b5d08d79fba",
+                  "timestamp": "2020-04-16T09:00:03Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "753716d525f7c9c8c3deb05a860b410c1fffad56",
+                  "timestamp": "2020-04-16T08:56:55Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "e09b398e1600f3ad1c73b4ef3ffa6b548f1998c3",
+                  "timestamp": "2020-04-16T08:48:18Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "c83672250e4c24ddf9576ca2c4ad4e840e90c4c6",
+                  "timestamp": "2020-04-16T08:09:59Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "de3d83235fb680da286f2a3ca488dda3b867addc",
+                  "timestamp": "2020-04-16T07:53:43Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "cd05960de26599ab0e8ae7f3373f4beb6d31d52f",
+                  "timestamp": "2020-04-16T07:31:02Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "06168fb84fabd1bcb6e572d9996a36da52e75cc9",
+                  "timestamp": "2020-04-16T06:48:52Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "8f67e139b09de12e74ca842b405e75afd0e3d246",
+                  "timestamp": "2020-04-16T06:48:37Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "e877a94d0046e5ffa82805d015c36106c61512f2",
+                  "timestamp": "2020-04-16T06:20:48Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "5a1606646c2b35feb750f7264dbe84aecca78375",
+                  "timestamp": "2020-04-16T06:20:08Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "a54c69fd183ed37f4519ce636ba8cfd47b2c4534",
+                  "timestamp": "2020-04-13T18:28:14Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "7c822b1714457c6dd1abde580677dc01e58b957d",
+                  "timestamp": "2020-04-13T18:00:18Z"
+                }
+              },
+              {
+                "node": {
+                  "sha": "b75c59489300bfbf3839f7a89835cea4da37e65c",
+                  "timestamp": "2020-04-13T17:32:47Z"
+                }
+              }
+            ]
           }
-        ]
+        }
       }
     }
   }

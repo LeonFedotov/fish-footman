@@ -1,0 +1,28 @@
+{
+  "id": 9395724297,
+  "sha": "5f9ca41c7ba1f5c0ff8932782b351adf3a8ce46a",
+  "target_url": "http://pullrequest-tc.dev.wixpress.com/viewLog.html",
+  "description": "Started TeamCity Build Mono repo test / santa-editor",
+  "state": "success",
+  "commit": {
+    "sha": "5f9ca41c7ba1f5c0ff8932782b351adf3a8ce46a"
+  },
+  "created_at": "2020-04-16T19:52:18+00:00",
+  "updated_at": "2020-04-16T19:52:18+00:00",
+  "repository": {
+    "id": 25150799,
+    "node_id": "MDEwOlJlcG9zaXRvcnkyNTE1MDc5OQ==",
+    "name": "santa-editor",
+    "full_name": "wix-private/santa-editor",
+    "private": true,
+    "owner": {
+      "login": "wix-private",
+      "id": 16781854,
+      "node_id": "MDEyOk9yZ2FuaXphdGlvbjE2NzgxODU0",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/16781854?v=4",
+      "gravatar_id": "",
+      "type": "Organization",
+      "site_admin": false
+    }
+  }
+}

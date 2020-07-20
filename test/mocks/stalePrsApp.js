@@ -14,6 +14,7 @@ module.exports = app => {
       return stalePrs.revalidateRepo(context)
     }
   })
+  app.on(['status'], stalePrs.revalidatePrFromState)
 
   app.log('fish footman is running!')
 }

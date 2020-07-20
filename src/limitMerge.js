@@ -1,86 +1,65 @@
 const _ = require('lodash')
 const path = require('path')
 
-const { pullrequests, pullrequest } = require('./lib')
-const { getIssues } = require('./queries')
+const { issuesByLabel, pullrequests, pullrequest, setStatus } = require('./lib')
 
 const {
   labelName,
   statusName,
-  statusDescription,
+  // statusDescription,
   failureMessage,
   successMessage
 } = require('./config').limitMerge
 
-const fishyNodes = async (
-  context,
-  params = context.repo({ label: labelName })
-) => context.github
-  .graphql(getIssues, params)
-  .then(async ({ repository: { result: { nodes, pageInfo: { hasNextPage, endCursor: cursor } } } }) =>
-    hasNextPage
-      ? nodes.concat(await fishyNodes(context, { ...params, cursor }))
-      : nodes
-  )
-
-const restrictedDirs = async (context) => _.chain(await fishyNodes(context))
-  .map(({ body }) => body.split('\r\n'))
-  .flatten()
-  .uniq()
-  .compact()
-  .map((dir) => path.normalize(`${dir.trim()}/`))
+const restrictedDirs = async (context) => _
+  .chain(await issuesByLabel(context, labelName))
+  .flatMap(({ url, body }) => body.split('\r\n').map(dir => ({ url, dir: dir.trim() })))
+  .filter(({ dir }) => Boolean(dir))
+  .uniqBy(({ dir }) => dir)
+  .map(({ url, dir }) => ({ url, dir: path.normalize(`${dir}/`) }))
   .value()
 
-const createStatus = (
-  context,
-  {
-    sha = context.payload.pull_request.head.sha,
-    state: prevState = 'PENDING'
-  },
-  state = 'pending',
-  status = {
-    name: statusName,
-    descr:
-      state === 'success' ? successMessage
-        : state === 'failure' ? failureMessage
-          : statusDescription
-  }
-) => prevState !== state.toUpperCase() && context.github.repos.createStatus(
-  context.repo({
-    context: status.name,
-    sha,
-    state,
-    description: status.descr
-  })
-)
-
-const validatePr = async (context, pr, restrictions) => {
-  if (restrictions.some(dir => dir === '*/')) {
-    createStatus(context, pr, 'failure').catch(e => context.log.error(e))
-    return false
+const validatePr = async (context, { files }, restrictions) => {
+  const restriction = restrictions.find(({ dir }) => dir === '*/')
+  if (restriction) {
+    return [false, restriction.url]
   }
 
-  for await (const file of pr.files) {
-    if (restrictions.some((dir) => file.startsWith(dir))) {
-      createStatus(context, pr, 'failure')
-      return false
+  for await (const file of files) {
+    const restriction = restrictions.find(({ dir }) => file.startsWith(dir))
+    if (restriction) {
+      return [false, restriction.url]
     }
   }
-  createStatus(context, pr, 'success')
-  return true
+
+  return [true]
 }
 
 module.exports = {
   async revalidateRepo (context) {
-    context.log('Validating repo')
+    context.log('limitMerge repo:', context.repo())
     try {
-      context.log('Gathering restrictions')
       const restrictions = await restrictedDirs(context)
       context.log(`Got ${restrictions.length} restrictions`, restrictions)
 
-      for await (const pr of pullrequests(context, statusName)) {
-        validatePr(context, pr, restrictions)
-          .then((res) => context.log(pr.number, res))
+      for await (const pr of pullrequests(context)) {
+        const sha = pr.sha
+        const oldState = _
+          .chain(pr)
+          .get('statuses', [])
+          .find(['context', statusName])
+          .get('state', 'PENDING')
+          .value()
+
+        const [isValid, targetUrl] = await validatePr(context, pr, restrictions)
+
+        if (isValid) {
+          context.log(pr.number, sha, 'true')
+          setStatus(context, sha, { name: statusName, description: successMessage, targetUrl }, 'success', oldState)
+        } else {
+          context.log(pr.number, sha, 'false')
+          setStatus(context, sha, { name: statusName, description: failureMessage, targetUrl }, 'failure', oldState)
+        }
       }
     } catch (e) {
       context.log.error(e)
@@ -88,15 +67,30 @@ module.exports = {
   },
 
   async revalidatePr (context) {
-    context.log('Validating pr')
+    context.log('limitMerge pr:', context.repo())
     try {
-      context.log('Gathering restrictions')
       const restrictions = await restrictedDirs(context)
       context.log(`Got ${restrictions.length} restrictions`, restrictions)
 
-      const pr = await pullrequest(context, statusName)
-      validatePr(context, pr, restrictions)
-        .then((res) => context.log(pr.number, res))
+      const number = _.get(context, 'payload.pull_request.number', -1)
+      const pr = await pullrequest(context, number)
+
+      const sha = pr.sha
+      const oldState = _
+        .chain(pr)
+        .get('statuses', [])
+        .find(['context', statusName])
+        .get('state', 'PENDING')
+        .value()
+      const [isValid, targetUrl] = await validatePr(context, pr, restrictions)
+
+      if (isValid) {
+        context.log(pr.number, 'true')
+        setStatus(context, sha, { name: statusName, description: successMessage, targetUrl }, 'success', oldState)
+      } else {
+        context.log(pr.number, 'false')
+        setStatus(context, sha, { name: statusName, description: failureMessage, targetUrl }, 'failure', oldState)
+      }
     } catch (e) {
       context.log.error(e)
     }

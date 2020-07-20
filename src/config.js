@@ -12,6 +12,7 @@ module.exports = {
     statusName: 'Stale Pull Request',
     statusDescription: 'Making sure pr isn\'t far away from master.',
     failureMessage: 'PR is too stale (farther than ' + maxDistnace + ' commits apart), merge from master.',
-    successMessage: 'PR is fresh!'
+    successMessage: 'PR is fresh!',
+    statusUrlMatch: 'http://pullrequest-tc.dev.wixpress.com/'
   }
 }

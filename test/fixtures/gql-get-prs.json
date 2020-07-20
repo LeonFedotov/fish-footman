@@ -1,7 +1,7 @@
 {
   "data": {
     "repository": {
-      "result": {
+      "pullRequests": {
         "pageInfo": {
           "endCursor": "Y3Vyc29yOnYyOpHOEL2Jfw==",
           "hasNextPage": false
@@ -15,9 +15,36 @@
                 {
                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "SUCCESS"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "description": "No merging restrictions detected.",
+                          "targetUrl": null,
+                          "timestamp": "2020-04-16T16:12:45Z",
+                          "state": "SUCCESS"
+                        },
+                        {
+                          "context": "Deploy Preview Validations (Bolt Pipeline)",
+                          "description": "TeamCity build started",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406145&buildTypeId=BoltPipeline_DeployPreviewValidationsResults",
+                          "timestamp": "2020-04-16T16:13:29Z",
+                          "state": "PENDING"
+                        },
+                        {
+                          "context": "Publish Artifacts (Bolt Pipeline)",
+                          "description": "TeamCity build finished",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406142&buildTypeId=BoltPipeline_DeploymentPreview_Install",
+                          "timestamp": "2020-03-16T16:51:22Z",
+                          "state": "SUCCESS"
+                        },
+                        {
+                          "context": "Source Validations Results (Bolt Pipeline)",
+                          "description": "TeamCity build finished",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406141&buildTypeId=BoltPipeline_SourceValidationsResults",
+                          "timestamp": "2020-03-16T16:48:34Z",
+                          "state": "SUCCESS"
+                        }
+                      ]
                     }
                   }
                 }
@@ -43,9 +70,36 @@
                 {
                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "FAILURE"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "description": "No merging restrictions detected.",
+                          "targetUrl": null,
+                          "timestamp": "2020-04-16T16:12:45Z",
+                          "state": "FAILURE"
+                        },
+                        {
+                          "context": "Deploy Preview Validations (Bolt Pipeline)",
+                          "description": "TeamCity build started",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406145&buildTypeId=BoltPipeline_DeployPreviewValidationsResults",
+                          "timestamp": "2020-04-16T16:13:29Z",
+                          "state": "PENDING"
+                        },
+                        {
+                          "context": "Publish Artifacts (Bolt Pipeline)",
+                          "description": "TeamCity build finished",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406142&buildTypeId=BoltPipeline_DeploymentPreview_Install",
+                          "timestamp": "2020-04-16T16:51:22Z",
+                          "state": "PENDING"
+                        },
+                        {
+                          "context": "Source Validations Results (Bolt Pipeline)",
+                          "description": "TeamCity build finished",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406141&buildTypeId=BoltPipeline_SourceValidationsResults",
+                          "timestamp": "2020-04-16T16:48:34Z",
+                          "state": "PENDING"
+                        }
+                      ]
                     }
                   }
                 }
@@ -71,9 +125,36 @@
                 {
                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "FAILURE"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "description": "No merging restrictions detected.",
+                          "targetUrl": null,
+                          "timestamp": "2020-04-16T16:12:45Z",
+                          "state": "FAILURE"
+                        },
+                        {
+                          "context": "Deploy Preview Validations (Bolt Pipeline)",
+                          "description": "TeamCity build started",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406145&buildTypeId=BoltPipeline_DeployPreviewValidationsResults",
+                          "timestamp": "2020-04-16T16:13:29Z",
+                          "state": "PENDING"
+                        },
+                        {
+                          "context": "Publish Artifacts (Bolt Pipeline)",
+                          "description": "TeamCity build finished",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406142&buildTypeId=BoltPipeline_DeploymentPreview_Install",
+                          "timestamp": "2020-04-16T16:51:22Z",
+                          "state": "SUCCESS"
+                        },
+                        {
+                          "context": "Source Validations Results (Bolt Pipeline)",
+                          "description": "TeamCity build finished",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406141&buildTypeId=BoltPipeline_SourceValidationsResults",
+                          "timestamp": "2020-04-16T16:48:34Z",
+                          "state": "SUCCESS"
+                        }
+                      ]
                     }
                   }
                 }
@@ -99,9 +180,36 @@
                 {
                   "commit": {
                     "status": {
-                      "context": {
-                        "state": "SUCCESS"
-                      }
+                      "contexts": [
+                        {
+                          "context": "Colinoscopy",
+                          "description": "No merging restrictions detected.",
+                          "targetUrl": null,
+                          "timestamp": "2020-04-16T16:12:45Z",
+                          "state": "SUCCESS"
+                        },
+                        {
+                          "context": "Deploy Preview Validations (Bolt Pipeline)",
+                          "description": "TeamCity build started",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406145&buildTypeId=BoltPipeline_DeployPreviewValidationsResults",
+                          "timestamp": "2020-04-16T16:13:29Z",
+                          "state": "PENDING"
+                        },
+                        {
+                          "context": "Publish Artifacts (Bolt Pipeline)",
+                          "description": "TeamCity build finished",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406142&buildTypeId=BoltPipeline_DeploymentPreview_Install",
+                          "timestamp": "2020-04-16T16:51:22Z",
+                          "state": "SUCCESS"
+                        },
+                        {
+                          "context": "Source Validations Results (Bolt Pipeline)",
+                          "description": "TeamCity build finished",
+                          "targetUrl": "http://pullrequest-tc.dev.wixpress.com/viewLog.html?buildId=7406141&buildTypeId=BoltPipeline_SourceValidationsResults",
+                          "timestamp": "2020-04-16T16:48:34Z",
+                          "state": "SUCCESS"
+                        }
+                      ]
                     }
                   }
                 }
