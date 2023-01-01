@@ -1,11 +1,9 @@
 {
-  "name": "@wix/colinoscopy",
-  "version": "2.3.0",
-  "license": "UNLICENSED",
-  "private": true,
+  "name": "fish-footman",
+  "version": "2.3.1",
+  "license": "MIT",
   "author": {
-    "name": "LeonFedotov",
-    "email": "leonf@wix.com"
+    "name": "LeonFedotov"
   },
   "scripts": {
     "dev": "nodemon",
